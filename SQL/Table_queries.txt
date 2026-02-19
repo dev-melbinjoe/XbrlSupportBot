@@ -1,0 +1,37 @@
+﻿
+USE XbrlSupportBot;
+GO
+
+-- Source documents (tickets, resolutions, KB, SOP)
+CREATE TABLE Documents (
+    Id BIGINT IDENTITY(1,1) CONSTRAINT PK_Documents PRIMARY KEY,
+    DocType NVARCHAR(50) NOT NULL,      -- 'ticket','resolution','kb','sop','log'
+    Title NVARCHAR(400) NULL,
+    Content NVARCHAR(MAX) NOT NULL,
+    SourceUri NVARCHAR(500) NULL,
+    Module NVARCHAR(100) NULL,          -- 'tagging','validation','rendering', etc.
+    Tags NVARCHAR(400) NULL,            -- pipe or comma separated tags
+    AclLabel NVARCHAR(100) NULL DEFAULT 'support',
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    UpdatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+);
+
+-- Chunked text (RAG units)
+CREATE TABLE DocChunks (
+    Id BIGINT IDENTITY(1,1) CONSTRAINT PK_DocChunks PRIMARY KEY,
+    DocId BIGINT NOT NULL FOREIGN KEY REFERENCES Documents(Id) ON DELETE CASCADE,
+    ChunkIndex INT NOT NULL,
+    ChunkText NVARCHAR(MAX) NOT NULL,
+    Metadata NVARCHAR(MAX) NULL,
+    -- Store vector as VARBINARY. We'll compute similarity in C# for simplicity.
+    Embedding VARBINARY(MAX) NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+);
+
+-- For quick keyword fallback search:
+--CREATE FULLTEXT CATALOG FT_XbrlSupportBot AS DEFAULT;
+--CREATE FULLTEXT INDEX ON Documents(Content) KEY INDEX PK_Documents ON FT_XbrlSupportBot;
+
+--CREATE FULLTEXT INDEX ON DocChunks(ChunkText) KEY INDEX PK_DocChunks ON FT_XbrlSupportBot;
+
+--SELECT FULLTEXTSERVICEPROPERTY('IsFullTextInstalled');

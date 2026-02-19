@@ -1,0 +1,20 @@
+DocType,Title,Content,SourceUri,Module,Tags
+ticket,Validation error: contextRef missing,User encountered error: 'Facts must have a valid contextRef'. Root Cause: Missing or invalid context assignment. Resolution Steps: 1) Open the Fact properties panel. 2) Check if a contextRef exists for the fact. 3) Ensure the context period matches the taxonomy requirement. 4) Regenerate the context list if corrupted. 5) Reapply contextRef and validate again.,JIRA:INC-4321,validation,contextRef|period|facts
+,,,,,
+ticket,Calculation inconsistency for total revenue,XBRL validation reports: 'Inconsistency found in calculation linkbase: total revenue does not match sum of children'. Root Cause: Incorrect sign or missing contributing fact. Resolution Steps: 1) Identify parent element. 2) Verify summation relationships. 3) Check for negative weights. 4) Correct incorrect tagging for revenue children elements.,JIRA:INC-4552,calculation,calc|revenue|summation
+,,,,,
+ticket,Dimension default member missing,Validation shows: 'Required default member for dimension ProductAxis not found'. Root Cause: Missing default member in instance. Resolution Steps: 1) Open Dimensions panel. 2) Select ProductAxis. 3) Assign default member as per taxonomy. 4) Revalidate.,JIRA:INC-3821,dimensions,dimension|defaultMember|axis
+,,,,,
+ticket,Incorrect taxonomy version used,User tagged document with wrong taxonomy version. Resolution Steps: 1) Open Taxonomy Manager. 2) Confirm correct taxonomy version for current filing. 3) Retag impacted facts. 4) Regenerate instance.,JIRA:INC-4021,taxonomy,taxonomy|version|retag
+,,,,,
+ticket,Label linkbase mismatch,"Error: 'Label role does not match expected role for element'. Root Cause: Wrong label assignment. Steps: 1) Check label definitions. 2) Assign correct role (e.g., verbose, terse). 3) Refresh linkbase.",JIRA:INC-4211,linkbase,label|role|presentation
+,,,,,
+ticket,Fact value datatype incorrect,Validation error: 'Invalid fact value type: expected decimal'. Root Cause: User entered string for numeric fact. Resolution Steps: 1) Validate element datatype in taxonomy. 2) Correct user input. 3) Revalidate.,JIRA:INC-3311,facts,datatype|facts|validation
+,,,,,
+ticket,Rendering issue in iXBRL viewer,Page 4 tables not rendering in the Inline Viewer. Cause: Missing presentation linkbase or hidden elements. Resolution Steps: 1) Inspect presentation tree. 2) Ensure required hidden facts exist. 3) Rebuild viewer output.,JIRA:INC-4771,rendering,ixbrl|rendering|presentation
+,,,,,
+ticket,UnitRef missing for monetary fact,Validation error: 'Fact requires a valid unitRef'. Resolution Steps: 1) Open Unit Manager. 2) Create or select correct unit (currency). 3) Apply to fact. 4) Validate.,JIRA:INC-5121,validation,unitRef|monetary|facts
+,,,,,
+ticket,Duplicate facts warning,Error: 'Duplicate facts detected for the same contextRef and unitRef'. Resolution: 1) Identify duplicate facts. 2) Remove or merge according to taxonomy rules. 3) Validate.,JIRA:INC-2911,facts,duplicate|contextRef|facts
+,,,,,
+ticket,Missing required element for filing,Validation error: 'Required element DocumentType missing'. Root Cause: mandatory element missing. Steps: 1) Search for DocumentType in taxonomy. 2) Tag required section. 3) Validate again.,JIRA:INC-2991,validation,required|mandate|documentType

@@ -1,0 +1,3 @@
+DocType,Title,Content,SourceUri,Module,Tags
+kb,"contextRef guidelines","The contextRef must uniquely identify the period and entity. Ensure duration and instant types are used correctly.","KB:CR-101","validation","contextRef|period"
+kb,"How to fix calculation inconsistencies","Summation relationships must match weights defined in the taxonomy. Negative signs indicate subtraction.","KB:CALC-222","calculation","calc|summation"

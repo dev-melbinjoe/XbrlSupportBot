@@ -1,0 +1,6 @@
+@XbrlSupportBot_HostAddress = http://localhost:5031
+
+GET {{XbrlSupportBot_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
