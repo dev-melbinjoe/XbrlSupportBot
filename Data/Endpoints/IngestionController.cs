@@ -40,7 +40,6 @@ namespace XbrlSupportBot.Data.Endpoints
                     SourceUri = parts[3],
                     Module = parts[4],
                     Tags = parts[5]
-
                 };
 
 
@@ -51,8 +50,24 @@ namespace XbrlSupportBot.Data.Endpoints
                 insertedDocs++;
 
                 var chunks = ReUsableUtilities.ChunkByLength(doc.Content, 1000, 150);
-            }
 
+                for (int i = 0; i < chunks.Count; i++)
+                {
+
+                    await conn.ExecuteAsync(@"
+                                             INSERT INTO DocChunks (DocId,ChunkIndex,ChunkText,Metadata)
+                                             VALUES (@DocId,@Idx,@Text,@Meta);",new {
+                                                                                        DocId = docId,
+                                                                                        Idx = i,
+                                                                                        Text = chunks[i],
+                                                                                        Meta = (string?)null
+                                                                                }
+                                            );
+                    insertedChunks++;
+
+                }
+            }
+            return Ok(new { insertedDocs, insertedChunks });
         }
 
 
