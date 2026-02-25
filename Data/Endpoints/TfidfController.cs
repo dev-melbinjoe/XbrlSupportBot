@@ -32,7 +32,7 @@ namespace XbrlSupportBot.Data.Endpoints
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
 
 
