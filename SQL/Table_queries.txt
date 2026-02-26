@@ -37,3 +37,30 @@ CREATE TABLE DocChunks (
 --CREATE FULLTEXT INDEX ON DocChunks(ChunkText) KEY INDEX PK_DocChunks ON FT_XbrlSupportBot;
 
 --SELECT FULLTEXTSERVICEPROPERTY('IsFullTextInstalled');
+
+
+
+USE XbrlSupport;
+GO
+
+-- Stores token -> index mapping and IDF weights
+IF OBJECT_ID('TfidfVocab') IS NULL
+BEGIN
+  CREATE TABLE TfidfVocab (
+    Term NVARCHAR(100) NOT NULL PRIMARY KEY,
+    TermIndex INT NOT NULL UNIQUE,
+    Df INT NOT NULL,
+    Idf FLOAT NOT NULL
+  );
+END
+
+-- Stores a single row with vector size & versioning (optional but helpful)
+IF OBJECT_ID('TfidfMeta') IS NULL
+BEGIN
+  CREATE TABLE TfidfMeta (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    VocabSize INT NOT NULL,
+    BuiltAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    Notes NVARCHAR(200) NULL
+  );
+END

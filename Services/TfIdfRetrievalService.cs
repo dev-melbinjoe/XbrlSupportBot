@@ -1,16 +1,12 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Dapper;
-using Microsoft.Data.SqlClient;
-
 
 namespace XbrlSupportBot.Services
 {
     public class TfIdfRetrievalService
     {
-
         private readonly IConfiguration _config;
-
-
+        private readonly TfidfEmbeddingService _tfidfSvc = new();
 
         public sealed record RetrieveResult
         {
@@ -19,7 +15,6 @@ namespace XbrlSupportBot.Services
             public double Score { get; init; }
         }
 
-
         public TfIdfRetrievalService(IConfiguration config)
         {
             _config = config;
@@ -27,125 +22,44 @@ namespace XbrlSupportBot.Services
 
         public async Task<List<RetrieveResult>> Retrieve(string query, int topK = 5)
         {
-            try
+            var connStr = _config.GetConnectionString("XbrlDb")!;
+            using var conn = new SqlConnection(connStr);
+
+            // 1) Build query vector using the persisted TF-IDF vocab + IDF
+            var (qvec, _) = await _tfidfSvc.BuildQueryVectorAsync(connStr, query);
+
+            // 2) Load candidate chunks that already have embeddings
+            var rows = (await conn.QueryAsync<(long Id, long DocId, string Text, byte[] Emb)>(
+                "SELECT Id, DocId, ChunkText AS Text, Embedding AS Emb FROM DocChunks WHERE Embedding IS NOT NULL"
+            )).ToList();
+
+            // 3) Cosine similarity (dot product of L2-normalized vectors)
+            var results = new List<RetrieveResult>(rows.Count);
+            foreach (var r in rows)
             {
-                string connstr = _config.GetConnectionString("XbrlDb");
-                using var conn = new SqlConnection(connstr);
+                if (r.Emb == null || r.Emb.Length == 0) continue;
 
-                // 1. Load All chunks
-                var rows = (await conn.QueryAsync<(long Id, long DocId, string Text, byte[] embd)>("SELECT Id, DocId, ChunkText as Text, Embedding as embd FROM DocChunks")).ToList();
+                var vec = TfidfEmbeddingService.DeserializeVector(r.Emb);
 
-                // 2. Convert Tf - Idf vector
+                // If sizes don't match, it means vocabulary changed: rebuild embeddings
+                if (vec.Length != qvec.Length) continue;
 
-                var svc = new TfIdfEmbeddingService();
-                var tokens = query.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                var vec = BuildQueryVector(tokens, rows, svc);
+                double dot = 0;
+                for (int i = 0; i < qvec.Length; i++)
+                    dot += qvec[i] * vec[i];
 
-
-                // 3. Compute similarity
-                //var scored = rows.Select(r => (r.DocId, r.Text, Score: Cosine(vec, Deserialize(r.embd)))).OrderByDescending(x => x.Score).Take(topK).ToList();
-
-                var scored = rows
-                            .Select(r =>
-                                    new RetrieveResult
-                                    {
-                                        DocId = r.DocId,
-                                        ChunkTxt = r.Text,
-                                        Score = Cosine(vec, Deserialize(r.embd))
-                                    })
-                            .OrderByDescending(x => x.Score)
-                            .Take(topK)
-                            .ToList();
-
-                return scored;
-
+                results.Add(new RetrieveResult
+                {
+                    DocId = r.DocId,
+                    ChunkTxt = r.Text,
+                    Score = dot
+                });
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            return results
+                .OrderByDescending(x => x.Score)
+                .Take(topK)
+                .ToList();
         }
-
-        //public async Task<List<(long DocId, string ChunkTxt)>> Retrieve(string query, int topK = 5)
-        //{
-        //    try
-        //    {
-        //        string connstr = _config.GetConnectionString("XbrlDb");
-        //        using var conn = new SqlConnection(connstr);
-
-        //        var rows = (await conn.QueryAsync<(long Id, long DocId, string Text, byte[] embd)>(
-        //            "SELECT Id, DocId, ChunkText as Text, Embedding as embd FROM DocChunks")).ToList();
-
-        //        var svc = new TfIdfEmbeddingService();
-        //        var tokens = query.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        //        var vec = BuildQueryVector(tokens, rows, svc);
-
-        //        var top = rows
-        //            .Select(r => (
-        //                DocId: r.DocId,
-        //                Text: r.Text,
-        //                Score: Cosine(vec, Deserialize(r.embd))
-        //            ))
-        //            .OrderByDescending(x => x.Score)
-        //            .Take(topK)
-        //            .Select(x => (x.DocId, ChunkTxt: x.Text)) // project & rename to match return type
-        //            .ToList();
-
-        //        return top;
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //}
-
-
-
-        #region In class Utilities
-
-
-        private static double[] Deserialize(byte[] bin)
-        {
-            var vec = new double[bin.Length / sizeof(double)];
-            Buffer.BlockCopy(bin, 0, vec, 0, bin.Length);
-            return vec;
-        }
-
-
-        private static double[] BuildQueryVector(IEnumerable<string> tokens,
-                List<(long Id, long DocId, string Text, byte[] Emb)> rows,
-                TfIdfEmbeddingService svc)
-        {
-            // Build vocabulary from first stored vector length
-            int size = Deserialize(rows.First().Emb).Length;
-            var vec = new double[size];
-
-            // Very simple TF-only query vector (good enough for support bot)
-            foreach (var t in tokens.Where(t => t.Length > 2))
-            {
-                // If vocabulary dictionary has token, add weight
-                // Using ContainsKey or hash approach (not perfect, but simple)
-                int hash = Math.Abs(t.GetHashCode()) % size;
-                vec[hash]++;
-            }
-            return vec;
-        }
-
-
-        private static double Cosine(double[] a, double[] b)
-        {
-            double dot = 0, na = 0, nb = 0;
-            for (int i = 0; i < a.Length; i++)
-            {
-                dot += a[i] * b[i];
-                na += a[i] * a[i];
-                nb += b[i] * b[i];
-            }
-            return dot / (Math.Sqrt(na) * Math.Sqrt(nb) + 1e-12);
-        }
-
-        #endregion
-
-
     }
 }

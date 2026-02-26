@@ -1,42 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
 using XbrlSupportBot.Services;
 
-namespace XbrlSupportBot.Data.Endpoints
+namespace XbrlSupportBot.Endpoints
 {
-
     [ApiController]
     [Route("tfidf")]
-    public class TfidfController : Controller
+    public class TfidfController : ControllerBase
     {
-        private readonly IConfiguration _config;
+        private readonly IConfiguration _cfg;
 
-        public TfidfController(IConfiguration config)
-        {
-            _config = config;
-        }
-
+        public TfidfController(IConfiguration cfg) => _cfg = cfg;
 
         [HttpPost("build")]
         public async Task<IActionResult> Build()
         {
-            try
-            {
-                var connStr = _config.GetConnectionString("XbrlDb");
-                var svc = new TfIdfEmbeddingService();
-
-                await svc.BuildandStoreEmbeddings(connStr);
-
-                return Ok(new { message = "TF-IDF embeddings created for all chunks." });
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
-
+            var connStr = _cfg.GetConnectionString("XbrlDb")!;
+            var svc = new TfidfEmbeddingService(maxVocab: 20000);
+            await svc.BuildTfIdfAsync(connStr);
+            return Ok(new { message = "TF-IDF vocabulary and embeddings rebuilt." });
         }
-
     }
 }
