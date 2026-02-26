@@ -2,6 +2,8 @@
 USE XbrlSupportBot;
 GO
 
+select * from Documents
+select * from DocChunks
 -- Source documents (tickets, resolutions, KB, SOP)
 CREATE TABLE Documents (
     Id BIGINT IDENTITY(1,1) CONSTRAINT PK_Documents PRIMARY KEY,
