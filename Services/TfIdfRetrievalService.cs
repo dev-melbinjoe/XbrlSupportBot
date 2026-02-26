@@ -10,12 +10,22 @@ namespace XbrlSupportBot.Services
 
         private readonly IConfiguration _config;
 
+
+
+        public sealed record RetrieveResult
+        {
+            public long DocId { get; init; }
+            public string ChunkTxt { get; init; } = "";
+            public double Score { get; init; }
+        }
+
+
         public TfIdfRetrievalService(IConfiguration config)
         {
             _config = config;
         }
 
-        public async Task<List<(long DocId, string ChunkTxt, double score)>> Retrieve(string query, int topK = 5)
+        public async Task<List<RetrieveResult>> Retrieve(string query, int topK = 5)
         {
             try
             {
@@ -36,11 +46,13 @@ namespace XbrlSupportBot.Services
                 //var scored = rows.Select(r => (r.DocId, r.Text, Score: Cosine(vec, Deserialize(r.embd)))).OrderByDescending(x => x.Score).Take(topK).ToList();
 
                 var scored = rows
-                            .Select(r => (
-                                DocId: r.DocId,
-                                ChunkTxt: r.Text,
-                                Score: Cosine(vec, Deserialize(r.embd))
-                            ))
+                            .Select(r =>
+                                    new RetrieveResult
+                                    {
+                                        DocId = r.DocId,
+                                        ChunkTxt = r.Text,
+                                        Score = Cosine(vec, Deserialize(r.embd))
+                                    })
                             .OrderByDescending(x => x.Score)
                             .Take(topK)
                             .ToList();
