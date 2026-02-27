@@ -64,3 +64,32 @@ BEGIN
     Notes NVARCHAR(200) NULL
   );
 END
+
+
+
+
+
+
+
+USE XbrlSupport;
+GO
+
+-- If not created already, create a unique clustered index on DocChunks.Id
+-- (Full-text requires a unique, non-nullable, single-column key)
+IF NOT EXISTS (SELECT 1 FROM sys.fulltext_catalogs WHERE name = 'FT_XbrlSupport')
+    CREATE FULLTEXT CATALOG FT_XbrlSupport AS DEFAULT;
+
+-- Drop existing FT indexes if created earlier incorrectly
+IF EXISTS (SELECT 1 FROM sys.fulltext_indexes WHERE object_id = OBJECT_ID('dbo.DocChunks'))
+    DROP FULLTEXT INDEX ON dbo.DocChunks;
+
+-- Create FT index on ChunkText with DocChunks.Id as the key
+CREATE FULLTEXT INDEX ON dbo.DocChunks(ChunkText LANGUAGE 1033)
+    KEY INDEX PK_DocChunks  -- Replace with your actual PK index name on DocChunks(Id)
+    ON FT_XbrlSupport;
+GO
+
+
+
+
+SELECT FULLTEXTSERVICEPROPERTY('IsFullTextInstalled');
