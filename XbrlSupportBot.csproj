@@ -14,6 +14,7 @@
     <Compile Remove="Services\TfIdfEmbeddingService_26022026.cs" />
     <Compile Remove="Services\TfIdfRetrievalService_26022026.cs" />
     <Compile Remove="Services\TfIdfRetrievalService_27022026.cs" />
+    <Compile Remove="WeatherForecast.cs" />
   </ItemGroup>
 
   <ItemGroup>
