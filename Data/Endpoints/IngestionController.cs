@@ -46,7 +46,8 @@ namespace XbrlSupportBot.Data.Endpoints
                 var docId = await conn.ExecuteScalarAsync<long>(@"
                                                                  INSERT INTO Documents (DocType,Title,Content,SourceUri,Module,Tags)
                                                                  OUTPUT INSERTED.Id
-                                                                 VALUES (@DocType,@Title,@Content,@SourceUri,@Module,@Tags);", doc);
+                                                                 VALUES (@DocType,@Title,@Content,@SourceUri,@Module,@Tags);", doc
+                                                               );
                 insertedDocs++;
 
                 var chunks = ReUsableUtilities.ChunkByLength(doc.Content, 1000, 150);
@@ -61,8 +62,8 @@ namespace XbrlSupportBot.Data.Endpoints
                                                                                         Idx = i,
                                                                                         Text = chunks[i],
                                                                                         Meta = (string?)null
-                                                                                }
-                                            );
+                                                                                     }
+                                           );
                     insertedChunks++;
 
                 }

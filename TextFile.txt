@@ -23,3 +23,17 @@ https://nam.safelink.emails.azure.net/redirect/?destination=https%3A%2F%2Faka.ms
 https://learn.microsoft.com/en-us/users/melbinjoe-0358/settings#account-linking
 
 
+D:\MELBIN JOE\JOE\XbrlSupportBot\xbrl_chatbot_backend
+
+D:\MELBIN JOE\XbrlSupportBot\xbrl_chatbot_UI
+
+
+
+so basically i have both back-end and front-end file in the folder D:\MELBIN JOE\XbrlSupportBot\
+
+
+
+my doubt is can open these both projects files in vs code at the same time, 
+and open two terminal one for npx and another .net, and successfully run these two projects in different localhost instance? 
+this is due to lower end laptop configuration, my laptop cannot candle both vs code and Visual studio , 
+it has only 4 gb ram and 512 gb ssd
