@@ -37,3 +37,15 @@ my doubt is can open these both projects files in vs code at the same time,
 and open two terminal one for npx and another .net, and successfully run these two projects in different localhost instance? 
 this is due to lower end laptop configuration, my laptop cannot candle both vs code and Visual studio , 
 it has only 4 gb ram and 512 gb ssd
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS vector;
+
+CREATE TABLE jira_vectors (
+    id SERIAL PRIMARY KEY,
+    ticket_key TEXT,
+    content TEXT,
+    embedding vector(1536) -- 1536 is standard for OpenAI; change based on your model
+);

@@ -36,4 +36,8 @@
     <Folder Include="Data\IssuesSourceFiles\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\JiraRcaExtractor\JiraExtractor.csproj" />
+  </ItemGroup>
+
 </Project>
