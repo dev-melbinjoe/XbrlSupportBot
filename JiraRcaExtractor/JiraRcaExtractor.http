@@ -1,6 +1,0 @@
-@JiraRcaExtractor_HostAddress = http://localhost:5217
-
-GET {{JiraRcaExtractor_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

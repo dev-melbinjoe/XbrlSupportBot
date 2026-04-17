@@ -1,4 +1,4 @@
-﻿namespace JiraExtractor.Services
+﻿namespace XbrlSupportBot.Services
 {
    public static class Constant
     {
@@ -11,9 +11,9 @@
 
     public class JiraTicket
     {
-        public string Key { get; set; }
-        public string Summary { get; set; }
-        public string Priority { get; set; }
-        public string RcaComment { get; set; }
+        public string Key { get; set; } = string.Empty;
+        public string Summary { get; set; } = string.Empty;
+        public string Priority { get; set; } = string.Empty;
+        public string RcaComment { get; set; } = string.Empty;
     }
 }
