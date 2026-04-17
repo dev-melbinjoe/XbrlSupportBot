@@ -29,11 +29,33 @@ namespace XbrlSupportBot.Services
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", auth);
 
+
+            _client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+
+
             string jql = $"project = '{jira["ProjectKey"]}' AND status = 'Done'";
-            string url = $"{jira["BaseUrl"]}/rest/api/2/search?jql={Uri.EscapeDataString(jql)}&fields=summary,priority,comment&maxResults=100";
+            //string url = $"{jira["BaseUrl"]}/rest/api/2/search?jql={Uri.EscapeDataString(jql)}&fields=summary,priority,comment&maxResults=100";
+
+
+
+            string url =
+                $"{jira["BaseUrl"]}/rest/api/3/search/jql" +
+                $"?jql={Uri.EscapeDataString(jql)}" +
+                $"&fields=summary,priority,comment" +
+                $"&maxResults=100";
+
+            url = "https://datatracks.atlassian.net/rest/api/3/search/jql?jql=project%20%3D%20%27SWSUP%27%20AND%20status%20%3D%20%27Done%27&fields=summary,priority,comment&maxResults=100";
 
             var response = await _client.GetStringAsync(url);
             var json = JObject.Parse(response);
+
+
+            //if (!response.IsSuccessStatusCode)
+            //{
+            //    throw new Exception($"Jira error {response.StatusCode}: {content}");
+            //}
+
 
             var results = new List<JiraTicket>();
 
