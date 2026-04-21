@@ -11,9 +11,19 @@
 
     public class JiraTicket
     {
-        public string Key { get; set; } = string.Empty;
-        public string Summary { get; set; } = string.Empty;
-        public string Priority { get; set; } = string.Empty;
-        public string RcaComment { get; set; } = string.Empty;
+        public string? Key { get; set; } = string.Empty;
+        public string? Summary { get; set; } = string.Empty;
+        public string? Priority { get; set; } = string.Empty;
+        public string? RcaComment { get; set; } = string.Empty;
+        public string? Workaround { get; set; }
+    }
+
+    public class XBRLKnowledgeBase
+    {
+        public string? Id { get; set; } 
+        public string? IssueSummary { get; set; }
+        public string? Symptom { get; set; } 
+        public string? Resolution { get; set; } 
+        public string? Tags { get; set; } // e.g., "Superscript, iXBRL, VIP"
     }
 }

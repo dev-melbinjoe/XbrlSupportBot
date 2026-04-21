@@ -45,7 +45,7 @@ namespace XbrlSupportBot.Services
                 $"&fields=summary,priority,comment" +
                 $"&maxResults=100";
 
-            url = "https://datatracks.atlassian.net/rest/api/3/search/jql?jql=project%20%3D%20%27SWSUP%27%20AND%20status%20%3D%20%27Done%27&fields=summary,priority,comment&maxResults=100";
+            //url = "https://datatracks.atlassian.net/rest/api/2/search/jql?jql=project%20%3D%20%27SWSUP%27%20AND%20status%20%3D%20%27Done%27&fields=summary,priority,comment&maxResults=100";
 
             var response = await _client.GetStringAsync(url);
             var json = JObject.Parse(response);
@@ -61,20 +61,34 @@ namespace XbrlSupportBot.Services
 
             foreach (var issue in json["issues"])
             {
-                var comments = issue["fields"]?["comment"]?["comments"];
+                //var comments = issue["fields"]?["comment"]?["comments"];
 
-                var rca = comments?
-                    .FirstOrDefault(c => c["body"]?.ToString()
-                    .Contains("RCA:", StringComparison.OrdinalIgnoreCase) == true)?["body"]?.ToString();
+                var allComments = issue["fields"]?["comment"]?["comments"]?.Select(c => c["body"]?.ToString()).ToList();
+
+                // Identify a Workaround (often mentioned by Testing/Support)
+                var workaround = allComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+
+                // Identify the RCA
+                var rca = allComments?.FirstOrDefault(c => c.Contains("RCA:", StringComparison.OrdinalIgnoreCase));
+
+                //var rca = comments?
+                //    .FirstOrDefault(c => c["body"]?.ToString()
+                //    .Contains("RCA:", StringComparison.OrdinalIgnoreCase) == true)?["body"]?.ToString();
 
                 if (!string.IsNullOrEmpty(rca))
                 {
                     results.Add(new JiraTicket
                     {
+                        //Key = issue["key"]?.ToString(),
+                        //Summary = issue["fields"]?["summary"]?.ToString(),
+                        //Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+                        //RcaComment = rca,
+
                         Key = issue["key"]?.ToString(),
                         Summary = issue["fields"]?["summary"]?.ToString(),
                         Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
-                        RcaComment = rca
+                        RcaComment = rca ?? "No specific RCA documented",
+                        Workaround = workaround ?? "No manual workaround available" // Add this field to your Model
                     });
                 }
             }
