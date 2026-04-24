@@ -1,0 +1,477 @@
+USE [Rainbow3_Prod_2]
+GO
+
+/****** Object:  Table [dbo].[Taxonomy]    Script Date: 25-04-2026 12:20:12 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Taxonomy](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[TaxonomyId] [int] NULL,
+	[Name] [nvarchar](50) NOT NULL,
+	[TaxonomyType] [smallint] NULL,
+	[IsActive] [bit] NULL,
+	[TaxonomyYear] [int] NULL,
+	[IsAltLang] [int] NULL,
+	[IsDtrType] [bit] NULL,
+	[PrimaryValue] [varchar](50) NULL,
+	[SecondaryValue] [varchar](50) NULL,
+ CONSTRAINT [PK_Taxonomy_1] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[Taxonomy] ADD  DEFAULT (NULL) FOR [PrimaryValue]
+GO
+
+ALTER TABLE [dbo].[Taxonomy] ADD  DEFAULT (NULL) FOR [SecondaryValue]
+GO
+
+
+***********************************************************************************************************************************
+
+USE [Rainbow3_Prod_2]
+GO
+
+/****** Object:  Table [dbo].[Entity]    Script Date: 25-04-2026 12:21:08 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Entity](
+	[Id] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[TenantId] [int] NOT NULL,
+	[Website] [nvarchar](50) SPARSE  NULL,
+	[Address] [nvarchar](250) SPARSE  NULL,
+	[City] [nvarchar](100) NULL,
+	[State] [nvarchar](100) NULL,
+	[Pincode] [nvarchar](20) NULL,
+	[CountryId] [int] NULL,
+	[TradingSymbol] [nvarchar](50) NULL,
+	[TypeId] [int] NULL,
+	[CikNo] [nvarchar](50) NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedBy] [int] NULL,
+	[CreatedOn] [datetime] NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime] NULL,
+	[EntityLogo] [nvarchar](max) NULL,
+	[ValidFrom] [datetime] NULL,
+	[ValidTo] [datetime] NULL,
+	[IsLogo] [bit] NULL,
+ CONSTRAINT [PK_Entity] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[Entity] ADD  CONSTRAINT [DF_IsActive_Entity]  DEFAULT ((1)) FOR [IsActive]
+GO
+
+ALTER TABLE [dbo].[Entity]  WITH CHECK ADD  CONSTRAINT [FK_Entity_Country_countryid] FOREIGN KEY([CountryId])
+REFERENCES [dbo].[Country] ([Id])
+GO
+
+ALTER TABLE [dbo].[Entity] CHECK CONSTRAINT [FK_Entity_Country_countryid]
+GO
+
+ALTER TABLE [dbo].[Entity]  WITH CHECK ADD  CONSTRAINT [FK_Entity_EntityType_TypeId] FOREIGN KEY([TypeId])
+REFERENCES [dbo].[EntityType] ([Id])
+GO
+
+ALTER TABLE [dbo].[Entity] CHECK CONSTRAINT [FK_Entity_EntityType_TypeId]
+GO
+
+ALTER TABLE [dbo].[Entity]  WITH CHECK ADD  CONSTRAINT [FK_Entity_Tenant_TenantId] FOREIGN KEY([TenantId])
+REFERENCES [dbo].[Tenant] ([Id])
+GO
+
+ALTER TABLE [dbo].[Entity] CHECK CONSTRAINT [FK_Entity_Tenant_TenantId]
+GO
+
+
+***********************************************************************************************************************************************************************
+
+
+USE [Rainbow3_Prod_2]
+GO
+
+/****** Object:  Table [dbo].[TaxonomyElement]    Script Date: 25-04-2026 12:22:20 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[TaxonomyElement](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ChildId] [int] NOT NULL,
+	[ParentId] [int] NOT NULL,
+	[Name] [nvarchar](max) NULL,
+	[LabelText] [nvarchar](max) NOT NULL,
+	[ElementClassification] [int] NULL,
+	[RoleId] [int] NOT NULL,
+	[DataTypeId] [int] NULL,
+	[SubstitutionGroup] [smallint] NULL,
+	[PeriodType] [smallint] NULL,
+	[Abstract] [bit] NOT NULL,
+	[Nillable] [bit] NOT NULL,
+	[TaxonomyId] [int] NOT NULL,
+	[Prefix] [nvarchar](100) NULL,
+	[BalanceType] [smallint] NULL,
+	[ArcWeight] [nvarchar](50) NULL,
+	[Definition] [nvarchar](max) NULL,
+	[Negation] [bit] NULL,
+	[CreatedOn] [datetime] NULL,
+	[UpdatedOn] [datetime] NULL,
+	[TypedDimension] [smallint] NULL,
+	[IsRequired] [bit] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+*************************************************************************************************************************************************************************
+
+
+
+USE [Rainbow3_Prod_2]
+GO
+
+/****** Object:  Table [dbo].[TaxonomyRole]    Script Date: 25-04-2026 12:23:26 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[TaxonomyRole](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[TaxonomyId] [int] NOT NULL,
+	[TaxonomyType] [smallint] NULL,
+	[RoleType] [int] NULL,
+	[IsRequired] [bit] NULL,
+ CONSTRAINT [PK_TaxonomyRole] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[TaxonomyRole]  WITH CHECK ADD  CONSTRAINT [FK_TaxonomyRole_Taxonomy_TaxonomyId] FOREIGN KEY([TaxonomyId])
+REFERENCES [dbo].[Taxonomy] ([Id])
+GO
+
+ALTER TABLE [dbo].[TaxonomyRole] CHECK CONSTRAINT [FK_TaxonomyRole_Taxonomy_TaxonomyId]
+GO
+
+****************************************************************************************************************************************************************************
+
+
+
+USE [Rainbow3_Prod_2]
+GO
+
+/****** Object:  Table [dbo].[Workspace]    Script Date: 25-04-2026 12:24:21 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Workspace](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[DocumentTypeId] [int] NOT NULL,
+	[EntityId] [int] NOT NULL,
+	[ToDate] [datetime] NULL,
+	[TaxonomyId] [int] NULL,
+	[InstantDate] [datetime] NULL,
+	[DurationStartDate] [datetime] NULL,
+	[DurationEndDate] [datetime] NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedBy] [int] NULL,
+	[CreatedOn] [datetime] NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime] NULL,
+	[TickerSymbol] [varchar](30) NULL,
+	[SectionType] [bit] NULL,
+	[Status] [smallint] NULL,
+	[RfUser] [nvarchar](100) NULL,
+	[ALUser] [nvarchar](100) NULL,
+	[DataTracksAssitance] [smallint] NULL,
+	[Comments] [nvarchar](250) NULL,
+	[IsHighStyle] [bit] NULL,
+	[Separator] [int] NULL,
+	[IsAlternateLanguage] [bit] NOT NULL,
+	[PdfUploadType] [smallint] NOT NULL,
+	[RoUser] [nvarchar](200) NULL,
+	[SyndicateNumber] [varchar](500) NULL,
+	[OEFOutputType] [int] NULL,
+	[MICALanguage] [varchar](100) NULL,
+ CONSTRAINT [PK__Workspac__3213D09B1DCDBE1C] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[Workspace] ADD  CONSTRAINT [DataTracksAssitance_ZERO]  DEFAULT ((0)) FOR [DataTracksAssitance]
+GO
+
+ALTER TABLE [dbo].[Workspace] ADD  CONSTRAINT [DF_Workspace_IsHighStyle]  DEFAULT ((0)) FOR [IsHighStyle]
+GO
+
+ALTER TABLE [dbo].[Workspace] ADD  CONSTRAINT [DF_Workspace_IsAlternateLanguage]  DEFAULT ((0)) FOR [IsAlternateLanguage]
+GO
+
+ALTER TABLE [dbo].[Workspace] ADD  DEFAULT ((1)) FOR [PdfUploadType]
+GO
+
+ALTER TABLE [dbo].[Workspace] ADD  DEFAULT (NULL) FOR [OEFOutputType]
+GO
+
+ALTER TABLE [dbo].[Workspace]  WITH CHECK ADD  CONSTRAINT [FK_Workspace_DocumentType_DocumentTypeID] FOREIGN KEY([DocumentTypeId])
+REFERENCES [dbo].[DocumentType] ([Id])
+GO
+
+ALTER TABLE [dbo].[Workspace] CHECK CONSTRAINT [FK_Workspace_DocumentType_DocumentTypeID]
+GO
+
+ALTER TABLE [dbo].[Workspace]  WITH CHECK ADD  CONSTRAINT [FK_Workspace_Entity_EntityID] FOREIGN KEY([EntityId])
+REFERENCES [dbo].[Entity] ([Id])
+GO
+
+ALTER TABLE [dbo].[Workspace] CHECK CONSTRAINT [FK_Workspace_Entity_EntityID]
+GO
+
+***************************************************************************************************************************************************************************************
+
+
+USE [Rainbow3_Prod_2]
+GO
+
+/****** Object:  Table [dbo].[Tag]    Script Date: 25-04-2026 12:24:54 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Tag](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[WorkspaceId] [int] NOT NULL,
+	[SectionId] [int] NOT NULL,
+	[PresentationId] [int] NOT NULL,
+	[PeriodId] [int] NOT NULL,
+	[ReviewerStatus] [bit] NULL,
+	[Decimal] [nvarchar](10) NULL,
+	[Scale] [decimal](5, 0) NULL,
+	[Sign] [bit] NULL,
+	[Nil] [bit] NULL,
+	[IsNumeric] [bit] NULL,
+	[UnitRef] [nvarchar](50) NULL,
+	[TagValue] [nvarchar](max) NULL,
+	[TagType] [smallint] NULL,
+	[RoleId] [int] NULL,
+	[IsDimension] [bit] NULL,
+	[CalculationStatus] [int] NULL,
+	[CalculationParentId] [int] NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedBy] [int] NULL,
+	[CreatedOn] [datetime] NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime] NULL,
+	[IsZero] [bit] NOT NULL,
+	[INF] [bit] NOT NULL,
+	[HiddenTag] [bit] NOT NULL,
+	[EnumValue] [nvarchar](10) NULL,
+	[FlipSign] [bit] NULL,
+	[SeparatorId] [int] NULL,
+	[TransformationRule] [nvarchar](50) NULL,
+	[HiddenRefAppliedContent] [nvarchar](max) NULL,
+	[ScaleType] [int] NULL,
+	[EndSectionId] [int] NULL,
+	[DateTransformation] [int] NULL,
+ CONSTRAINT [PK_CustomTag] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[Tag] ADD  CONSTRAINT [DF_Tag_IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+
+ALTER TABLE [dbo].[Tag] ADD  DEFAULT ((0)) FOR [IsZero]
+GO
+
+ALTER TABLE [dbo].[Tag] ADD  DEFAULT ((0)) FOR [INF]
+GO
+
+ALTER TABLE [dbo].[Tag] ADD  DEFAULT ((0)) FOR [HiddenTag]
+GO
+
+ALTER TABLE [dbo].[Tag]  WITH CHECK ADD  CONSTRAINT [FK_CustomTag_Workspace_WorkspaceID] FOREIGN KEY([WorkspaceId])
+REFERENCES [dbo].[Workspace] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Tag] CHECK CONSTRAINT [FK_CustomTag_Workspace_WorkspaceID]
+GO
+
+*******************************************************************************************************************************************************************************
+
+USE [Rainbow3_Prod_2]
+GO
+
+/****** Object:  Table [dbo].[Presentation]    Script Date: 25-04-2026 12:25:23 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Presentation](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ChildId] [int] NOT NULL,
+	[ParentId] [int] NOT NULL,
+	[Name] [nvarchar](550) NOT NULL,
+	[LabelText] [nvarchar](1000) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[SubstitutionGroup] [smallint] NULL,
+	[Abstract] [bit] NULL,
+	[Nillable] [bit] NULL,
+	[PeriodType] [smallint] NULL,
+	[DataTypeId] [smallint] NULL,
+	[Prefix] [nvarchar](20) NULL,
+	[BalanceType] [smallint] NULL,
+	[ArcWeight] [nvarchar](5) NULL,
+	[TaxonomyId] [int] NOT NULL,
+	[Definition] [nvarchar](max) NULL,
+	[LabelRole] [nvarchar](50) NULL,
+	[ElementType] [smallint] NULL,
+	[StandardLabelText] [nvarchar](1000) NULL,
+	[PreviousLabelRole] [nvarchar](150) NULL,
+	[ExtendedDelete] [bit] NULL,
+	[OrderId] [int] NULL,
+	[IsActive] [bit] NULL,
+	[CreatedBy] [int] NULL,
+	[CreatedOn] [datetime] NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime] NULL,
+	[TypedDimension] [smallint] NULL,
+	[AlternateLanguageLabelText] [nvarchar](max) NULL,
+	[AlternateLanguageDefinition] [nvarchar](max) NULL,
+	[AlternateStandardLabelText] [nvarchar](max) NULL,
+ CONSTRAINT [PK_CustomTaxonomy] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[Presentation] ADD  CONSTRAINT [DF_Presentation_Nillable]  DEFAULT ((1)) FOR [Nillable]
+GO
+
+ALTER TABLE [dbo].[Presentation] ADD  CONSTRAINT [DF_Presentation_LabelRole]  DEFAULT ('standardLabel') FOR [LabelRole]
+GO
+
+ALTER TABLE [dbo].[Presentation] ADD  CONSTRAINT [DF_Presentation_IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+
+ALTER TABLE [dbo].[Presentation]  WITH CHECK ADD  CONSTRAINT [FK_CustomTaxonomyElement_CustomTaxonomyRole_CustomTaxonomyRoleID] FOREIGN KEY([RoleId])
+REFERENCES [dbo].[PresentationRole] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Presentation] CHECK CONSTRAINT [FK_CustomTaxonomyElement_CustomTaxonomyRole_CustomTaxonomyRoleID]
+GO
+
+ALTER TABLE [dbo].[Presentation]  WITH CHECK ADD  CONSTRAINT [FK_CustomTaxonomyElement_Taxonomy_TaxonomyID] FOREIGN KEY([TaxonomyId])
+REFERENCES [dbo].[Taxonomy] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Presentation] CHECK CONSTRAINT [FK_CustomTaxonomyElement_Taxonomy_TaxonomyID]
+GO
+
+***********************************************************************************************************************************************************************************
+
+USE [Rainbow3_Prod_2]
+GO
+
+/****** Object:  Table [dbo].[PresentationRole]    Script Date: 25-04-2026 12:25:45 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[PresentationRole](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](1000) NOT NULL,
+	[WorkspaceId] [int] NOT NULL,
+	[OrderId] [int] NOT NULL,
+	[IsActive] [int] NOT NULL,
+	[CreatedBy] [int] NULL,
+	[CreatedOn] [datetime] NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime] NULL,
+	[RoleType] [smallint] NULL,
+	[CurrentUser] [nvarchar](250) NULL,
+	[FundId] [int] NULL,
+	[ParentRoleId] [int] NULL,
+	[PresentationRoleSetId] [int] NULL,
+ CONSTRAINT [PK_CustomTaxonomyRole] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[PresentationRole] ADD  CONSTRAINT [DF_PresentationRole_IsActive_1]  DEFAULT ((1)) FOR [IsActive]
+GO
+
+ALTER TABLE [dbo].[PresentationRole]  WITH CHECK ADD  CONSTRAINT [FK_CustomTaxonomyRole_Workspace_WorkspaceID] FOREIGN KEY([WorkspaceId])
+REFERENCES [dbo].[Workspace] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[PresentationRole] CHECK CONSTRAINT [FK_CustomTaxonomyRole_Workspace_WorkspaceID]
+GO
+
+**************************************************************************************************************************************************************************************
+
