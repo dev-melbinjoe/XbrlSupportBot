@@ -22,20 +22,22 @@ namespace XbrlSupportBot.Services
                 var ws = workbook.Worksheets.Add("RCA Data");
 
                 ws.Cell(1, 1).Value = "Key";
-                ws.Cell(1, 2).Value = "Summary";
-                ws.Cell(1, 3).Value = "Priority";
-                ws.Cell(1, 4).Value = "RCA";
-                ws.Cell(1, 5).Value = "Workaround";
+                ws.Cell(1, 2).Value = "Description";
+                ws.Cell(1, 3).Value = "Summary";
+                ws.Cell(1, 4).Value = "Priority";
+                ws.Cell(1, 5).Value = "RCA";
+                ws.Cell(1, 6).Value = "Workaround";
 
                 int row = 2;
 
                 foreach (var t in tickets)
                 {
                     ws.Cell(row, 1).Value = t.Key;
-                    ws.Cell(row, 2).Value = t.Summary;
-                    ws.Cell(row, 3).Value = t.Priority;
-                    ws.Cell(row, 4).Value = t.RcaComment;
-                    ws.Cell(row, 5).Value = t.Workaround;
+                    ws.Cell(row, 2).Value = t.Description;
+                    ws.Cell(row, 3).Value = t.Summary;
+                    ws.Cell(row, 4).Value = t.Priority;
+                    ws.Cell(row, 5).Value = t.RcaComment;
+                    ws.Cell(row, 6).Value = t.Workaround;
                     row++;
                 }
                 ws.Columns().AdjustToContents();

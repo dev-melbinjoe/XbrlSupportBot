@@ -804,3 +804,2936 @@ Use a Local Embedding Model: You can use a library called SmartComponents.LocalE
 Store in Memory: For 100 tickets, you don't even need a database yet. You can just keep the vectors in a List<float[]> while the app is running.
 
 Would you like me to show you the .NET code to implement the "Free/Local" version of this step so you can see it working?
+
+
+
+
+This is a classic hurdle when working with Atlassian's Document Format (ADF). Because you switched your API call to /rest/api/3/, Jira is returning comments in a rich-text JSON structure (ADF) instead of plain text. This is why your Excel file looks like a mess of brackets and types.
+
+To make XBRLSupportBot performant, we need to solve two things in your C# code:
+
+Flatten the ADF JSON into readable text.
+
+Filter the "Email Noise" so the bot doesn't memorize signatures and headers.
+
+Step 1: Create a Recursive ADF-to-Text Parser
+Add this helper method to your JiraService to extract the actual text from that nested JSON structure.
+
+C#
+private string ConvertAdfToText(JToken adf)
+{
+    if (adf == null) return string.Empty;
+    
+    // If it's just a string (API v2), return it
+    if (adf.Type == JTokenType.String) return adf.ToString();
+
+    // If it's ADF (API v3), find all "text" nodes
+    var textNodes = adf.SelectTokens("..text");
+    return string.Join(" ", textNodes.Select(t => t.ToString())).Trim();
+}
+Step 2: Implement "Signal Filtering"
+You need to strip out everything from "From:", "Sent:", and "Regards" so only the RCA remains.
+
+C#
+private string CleanRcaContent(string rawText)
+{
+    if (string.IsNullOrWhiteSpace(rawText)) return rawText;
+
+    // 1. Split at common email headers to remove the 'tail'
+    string[] splitters = { "From:", "Sent:", "Subject:", "Regards,", "Best Regards," };
+    var cleaned = rawText.Split(splitters, StringSplitOptions.None)[0];
+
+    // 2. Remove extra whitespace and newlines
+    cleaned = Regex.Replace(cleaned, @"\s+", " ").Trim();
+
+    return cleaned;
+}
+Step 3: Update your FetchRcaTicketsAsync
+Update your loop to use these methods. This will fix your Excel output immediately.
+
+C#
+foreach (var issue in json["issues"])
+{
+    // Extract and flatten comments
+    var rawComments = issue["fields"]?["comment"]?["comments"]?
+                      .Select(c => ConvertAdfToText(c["body"]))
+                      .ToList();
+
+    // Logic: Look for the most detailed comment or specific keywords
+    var rcaRaw = rawComments?.FirstOrDefault(c => c.Contains("RCA:", StringComparison.OrdinalIgnoreCase));
+    var workaroundRaw = rawComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+
+    // Clean the text for Excel/Bot
+    var finalRca = CleanRcaContent(rcaRaw);
+    var finalWorkaround = CleanRcaContent(workaroundRaw);
+
+    if (!string.IsNullOrEmpty(finalRca))
+    {
+        results.Add(new JiraTicket
+        {
+            Key = issue["key"]?.ToString(),
+            Summary = issue["fields"]?["summary"]?.ToString(),
+            Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+            RcaComment = finalRca,
+            Workaround = finalWorkaround ?? "No manual workaround available"
+        });
+    }
+}
+Step 4: The Strategy for "Better Performance"
+Now that your data is clean, here is how you make the bot smarter:
+
+1. Taxonomy Categorization (The "Context" Tag)
+Your data shows specific XBRL errors (e.g., DescriptionOfAccountingPolicy... element issues).
+
+Method: In your .NET service, create a list of Taxonomy Keywords (e.g., "Element", "Tag", "Block", "Hierarchy").
+
+Action: If a ticket contains these, add a hidden property IsTaxonomyIssue: true. This helps the bot prioritize these over generic login issues.
+
+2. Building a "Problem-Solution" Pair
+The bot performs best when data is structured as a question and answer.
+
+Method: Map the Summary (The Problem) directly to the RcaComment (The Solution).
+
+Example for Bot Training:
+
+Input: "Issue with DescriptionOfAccountingPolicy tag"
+
+Output: "Remove the start and end tags for this specific element in Section F43-F44 as per RAIN-XXXX."
+
+3. Handling "Non-RCA" but Useful Tickets
+As you mentioned, some tickets are useful but don't say "RCA".
+
+Next Step: Instead of FirstOrDefault(c => c.Contains("RCA:")), use a Weighted Score:
+
+Contains "RCA": +100 points
+
+Contains "Fixed": +20 points
+
+Length > 100 characters: +30 points
+
+Action: Ingest any comment that scores > 50.
+
+Recommended Architecture for XBRLSupportBot
+Extraction: Your current C# service (now with the ADF parser).
+
+Storage: Since you want "Performance," do not just search the Excel file. Load this cleaned data into a Vector Database (like Pinecone or even a local SQLite with FTS5).
+
+Retrieval: When a user asks a question in React, your .NET backend searches the Vector DB for the 3 most similar "Cleaned RCAs."
+
+Generation: Send those 3 RCAs to Gemini with the prompt: "Based on these past Jira resolutions, suggest a fix for: [User Query]"
+
+Quick Question: Are you planning to run the "Cleaning" script once as a bulk import, or do you want the Bot to sync with Jira in real-time?
+
+
+
+
+
+var rawComments = issue["fields"]?["comment"]?["comments"]?
+
+      .Select(c => XbrlSupportBot.Utilities.DataCleaner.ConvertAdfToText(c["body"]))
+
+      .ToList();
+
+
+
+
+
+using Newtonsoft.Json.Linq;
+
+
+
+namespace XbrlSupportBot.Utilities
+
+{
+
+    public class DataCleaner
+
+    {
+
+        public string ConvertAdfToText(JToken adf)
+
+        {
+
+            if (adf == null) return string.Empty;
+
+
+
+            // If it's just a string (API v2), return it
+
+            if (adf.Type == JTokenType.String) return adf.ToString();
+
+
+
+            // If it's ADF (API v3), find all "text" nodes
+
+            var textNodes = adf.SelectTokens("..text");
+
+            return string.Join(" ", textNodes.Select(t => t.ToString())).Trim();
+
+        }
+
+    }
+
+}
+
+
+
+
+
+what is wrong with this?
+
+The logic is on the right track, but there are three main technical issues—one related to C# syntax, one to Jira's specific JSON structure, and one to performance.
+
+Here is the breakdown of what is wrong and how to fix it:
+
+1. Static vs. Instance Method
+In your Select statement, you are calling DataCleaner.ConvertAdfToText as if it were a static method:
+XbrlSupportBot.Utilities.DataCleaner.ConvertAdfToText(...)
+
+However, in your class definition, the method is an instance method (it lacks the static keyword).
+
+The Fix: Add static to the method signature so you don't have to instantiate the class every time.
+
+2. JSON "Quotes" in Output
+The line t.ToString() on a JToken that is a JValue (like a text node) will often include surrounding double quotes (e.g., "Hello" instead of Hello). This will make your Excel data look like "RCA:" "The" "issue" "was".
+
+The Fix: Cast the token to (string) to get the raw unquoted value.
+
+3. The "SelectTokens" Over-fetch
+Using ..text is a powerful recursive search, but Jira ADF text nodes are usually wrapped in a specific hierarchy: content -> text. If your ADF has "marks" (like bold or links), a simple join might mash words together without proper spacing or handle empty nodes poorly.
+
+The Corrected Code
+Here is the optimized and fixed version of your Utility class:
+
+C#
+using Newtonsoft.Json.Linq;
+using System.Linq;
+
+namespace XbrlSupportBot.Utilities
+{
+    public static class DataCleaner
+    {
+        // Added 'static' so you can call it directly
+        public static string ConvertAdfToText(JToken adf)
+        {
+            if (adf == null || !adf.HasValues && adf.Type != JTokenType.String) 
+                return string.Empty;
+
+            // Handle API v2 (Plain text)
+            if (adf.Type == JTokenType.String) 
+                return adf.ToString();
+
+            // Handle API v3 (ADF JSON)
+            // Use (string) cast to avoid extra double quotes in the text
+            var textNodes = adf.SelectTokens("..text")
+                               .Select(t => (string)t)
+                               .Where(t => !string.IsNullOrWhiteSpace(t));
+
+            return string.Join(" ", textNodes).Trim();
+        }
+    }
+}
+How to use it in your Service:
+Now that it is a static method, your Select will work perfectly:
+
+C#
+var rawComments = issue["fields"]?["comment"]?["comments"]?
+      .Select(c => DataCleaner.ConvertAdfToText(c["body"]))
+      .ToList();
+One more thing: The "Noise" Problem
+Even with the code fixed, your Excel will still contain:
+"Hi Team, We are now able to generate the output... Regards, Sheikfareeth..."
+
+To make the XBRLSupportBot perform better, you should add a second step to isolate the actual RCA within that string. Since you already have the text flattened, you can use a simple Regex or Index search:
+
+C#
+public static string ExtractOnlyRca(string fullComment)
+{
+    if (string.IsNullOrEmpty(fullComment)) return fullComment;
+
+    // Look for where "RCA:" starts
+    int rcaIndex = fullComment.IndexOf("RCA:", StringComparison.OrdinalIgnoreCase);
+    if (rcaIndex == -1) return fullComment;
+
+    // Cut everything before "RCA:"
+    string fromRca = fullComment.Substring(rcaIndex);
+
+    // Stop at common email signatures/headers
+    string[] terminators = { "Regards", "From:", "Sent:", "Subject:" };
+    int firstTerminator = terminators
+        .Select(t => fromRca.IndexOf(t, StringComparison.OrdinalIgnoreCase))
+        .Where(idx => idx != -1)
+        .DefaultIfEmpty(fromRca.Length)
+        .Min();
+
+    return fromRca.Substring(0, firstTerminator).Trim();
+}
+Why do this?
+If the bot "reads" 500 characters of email signatures for every 100 characters of actual solution, its accuracy will drop by 50% because the "noise" overwhelms the "signal." Cleaning this now is the secret to a fast, cheap, and smart AI.
+
+
+
+  public static string CleanRcaContent(string rawText)
+
+ {
+
+     if (string.IsNullOrWhiteSpace(rawText)) return rawText;
+
+
+
+     // Look for where "RCA:" starts
+
+     int rcaIndex = rawText.IndexOf("RCA:", StringComparison.OrdinalIgnoreCase);
+
+     if (rcaIndex == -1) return rawText;
+
+
+
+     // Cut everything before "RCA:"
+
+     string fromRca = rawText.Substring(rcaIndex);
+
+
+
+     // 1. Split at common email headers to remove the 'tail'
+
+     // Stop at common email signatures/headers
+
+     string[] terminators = { "Regards", "From:", "Sent:", "Subject:" };
+
+     int firstTerminator = terminators
+
+         .Select(t => fromRca.IndexOf(t, StringComparison.OrdinalIgnoreCase))
+
+         .Where(idx => idx != -1)
+
+         .DefaultIfEmpty(fromRca.Length)
+
+         .Min();
+
+
+
+          return fromRca.Substring(0, firstTerminator).Trim();
+
+ }
+
+
+
+explain this method in detail by each line, what it does and how it does, explain each and every detail by providing examples of how it works
+
+This method is a text-extraction filter. Its primary job is to isolate the "signal" (the Root Cause Analysis) from the "noise" (greetings, historical email threads, and signatures) found in a messy Jira comment.
+
+Think of it as a pair of digital scissors that clips off the top and bottom of a message, leaving only the technical explanation.
+
+Step-by-Step Breakdown
+1. The Guard Clause
+C#
+if (string.IsNullOrWhiteSpace(rawText)) return rawText;
+What it does: Checks if the input string is null, empty, or just spaces.
+
+Why: It prevents the code from crashing (NullReferenceException) if a ticket has no comments.
+
+2. Locating the Starting Point
+C#
+int rcaIndex = rawText.IndexOf("RCA:", StringComparison.OrdinalIgnoreCase);
+if (rcaIndex == -1) return rawText;
+What it does: Searches for the specific characters "RCA:". OrdinalIgnoreCase ensures it finds "rca:", "RCA:", or "Rca:".
+
+How it works: If it doesn't find the keyword, it returns the whole text. If it does find it, it stores the character position (index) where it starts.
+
+3. Cutting the "Top" Noise
+C#
+string fromRca = rawText.Substring(rcaIndex);
+What it does: Creates a new string starting exactly at "RCA:" and keeps everything after it.
+
+Effect: This instantly deletes "Hi Team," "Good Morning," and general project updates that appear before the technical explanation.
+
+4. Identifying the "Tail" Terminators
+C#
+string[] terminators = { "Regards", "From:", "Sent:", "Subject:" };
+What it does: Defines a list of "Stop Signs." In corporate Jira tickets, these keywords almost always signal the start of a signature or a previous email thread.
+
+5. Finding the Closest "Stop Sign" (The Logic Core)
+C#
+int firstTerminator = terminators
+    .Select(t => fromRca.IndexOf(t, StringComparison.OrdinalIgnoreCase))
+    .Where(idx => idx != -1)
+    .DefaultIfEmpty(fromRca.Length)
+    .Min();
+Select(...): Goes through each stop sign (Regards, From:, etc.) and finds its position in the string.
+
+Where(idx != -1): Ignores stop signs that aren't present in the text.
+
+DefaultIfEmpty(...): If none of the stop signs are found, it uses the total length of the string (meaning we keep everything to the end).
+
+Min(): This is the most important part. It finds the first stop sign that appears. If a message has both "Regards" and a "From:" header, we want to cut at the one that comes first to ensure no noise gets through.
+
+6. Final Extraction
+C#
+return fromRca.Substring(0, firstTerminator).Trim();
+What it does: Cuts the string from the start of "RCA:" to the first stop sign found. .Trim() removes any leftover trailing spaces or line breaks.
+
+Example in Action
+Input (rawText):
+
+"Hi Support Team, we investigated the issue. RCA: The hierarchy was missing a parent element in the presentation linkbase. This caused the validation error. Regards, Rajesh. From: manager@company.com Sent: Wednesday..."
+
+Trace:
+
+Find "RCA:": Found at index 34.
+
+Cut Top: fromRca becomes: "RCA: The hierarchy was missing a parent element... Regards, Rajesh. From: manager..."
+
+Find Terminators:
+
+"Regards" found at index 82.
+
+"From:" found at index 99.
+
+Find Min: The smallest index is 82 ("Regards").
+
+Final Cut: The code takes everything from index 0 to 82.
+
+Final Output:
+
+"RCA: The hierarchy was missing a parent element in the presentation linkbase. This caused the validation error."
+
+Why this helps XBRLSupportBot
+By using this method, your Excel data and your AI knowledge base are 100% technical content.
+
+Without this: The AI might think "Regards" or "Sheikfareeth" are part of an XBRL taxonomy error.
+
+With this: The AI only sees the "Root Cause," making it significantly more accurate and reducing the number of "tokens" you use (which saves money and improves speed).
+
+if (rcaIndex == -1) return rawText;
+
+explain this
+
+In programming, -1 is the standard "not found" indicator for search functions. This specific line acts as a safety valve (often called a "Guard Clause") to ensure the program doesn't crash when it encounters a ticket that doesn't have an RCA.
+
+Here is the detailed breakdown:
+
+1. The Search Mechanic
+The line preceding this in your code is int rcaIndex = rawText.IndexOf("RCA:", ...);.
+The IndexOf method scans your text from left to right:
+
+If it finds the word "RCA:", it returns the position (e.g., if "RCA:" is the 50th character, rcaIndex becomes 50).
+
+If it does not find the word "RCA:", it cannot return a position like 0 (which is the first character), so it returns -1.
+
+2. The Logical Check
+if (rcaIndex == -1) literally means: "If the search for 'RCA:' failed to find anything..."
+
+3. The Instruction (return rawText;)
+The second part of the line tells the code what to do in that failure scenario:
+"...then just give me back the original, unedited text and stop running the rest of this method."
+
+Why this is critical for your Bot
+Without this line, your code would try to perform a "Cut" (Substring) starting at position -1. Since a string doesn't have a -1 position, your .NET application would throw an ArgumentOutOfRangeException and crash immediately.
+
+Examples of how it behaves:
+Scenario	Input Text	rcaIndex Value	Result
+RCA Present	"Issue fixed. RCA: Wrong tag used."	13	The code continues and cuts the text to "RCA: Wrong tag used."
+No RCA Found	"I have unlocked the user account."	-1	This line triggers. It returns the original text "I have unlocked the user account."
+Typo in RCA	"Root Cause was a tag mismatch."	-1	This line triggers. Because it didn't find the exact string "RCA:", it returns the full text.
+Summary
+This line is a condition that says: "If we didn't find the specific marker we are looking for, don't try to be smart—just return the data as it is so we don't break the system."
+
+        public async Task<List<JiraTicket>> FetchRcaTicketsAsync()
+
+        {
+
+            var jira = _config.GetSection("Jira");
+
+
+
+            var auth = Convert.ToBase64String(
+
+                Encoding.ASCII.GetBytes($"{jira["Email"]}:{jira["ApiToken"]}")
+
+            );
+
+
+
+            _client.DefaultRequestHeaders.Authorization =
+
+                new AuthenticationHeaderValue("Basic", auth);
+
+
+
+
+
+            _client.DefaultRequestHeaders.Accept.Add(
+
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+
+
+
+            string jql = $"project = '{jira["ProjectKey"]}' AND status = 'Done'";
+
+            //string url = $"{jira["BaseUrl"]}/rest/api/2/search?jql={Uri.EscapeDataString(jql)}&fields=summary,priority,comment&maxResults=100";
+
+
+
+
+
+
+
+            string url =
+
+                $"{jira["BaseUrl"]}/rest/api/3/search/jql" +
+
+                $"?jql={Uri.EscapeDataString(jql)}" +
+
+                $"&fields=summary,priority,comment" +
+
+                $"&maxResults=100";
+
+
+
+            //url = "https://datatracks.atlassian.net/rest/api/2/search/jql?jql=project%20%3D%20%27SWSUP%27%20AND%20status%20%3D%20%27Done%27&fields=summary,priority,comment&maxResults=100";
+
+
+
+            var response = await _client.GetStringAsync(url);
+
+            var json = JObject.Parse(response);
+
+
+
+
+
+            //if (!response.IsSuccessStatusCode)
+
+            //{
+
+            //    throw new Exception($"Jira error {response.StatusCode}: {content}");
+
+            //}
+
+
+
+
+
+            var results = new List<JiraTicket>();
+
+
+
+            foreach (var issue in json["issues"])
+
+            {
+
+                //var comments = issue["fields"]?["comment"]?["comments"];
+
+                //var allComments = issue["fields"]?["comment"]?["comments"]?.Select(c => c["body"]?.ToString()).ToList();
+
+                var rawComments = issue["fields"]?["comment"]?["comments"]?
+
+                      .Select(c => DataCleaner.ConvertAdfToText(c["body"]))
+
+                      .ToList();
+
+
+
+                // Identify a Workaround (often mentioned by Testing/Support)
+
+                //var workaround = allComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+
+                var workaroundRaw = rawComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+
+                
+
+                // Identify the RCA
+
+                //var rca = allComments?.FirstOrDefault(c => c.Contains("RCA:", StringComparison.OrdinalIgnoreCase));
+
+                var rcaRaw = rawComments?.FirstOrDefault(c => c.Contains("RCA:", StringComparison.OrdinalIgnoreCase));
+
+
+
+                //var rca = comments?
+
+                //    .FirstOrDefault(c => c["body"]?.ToString()
+
+                //    .Contains("RCA:", StringComparison.OrdinalIgnoreCase) == true)?["body"]?.ToString();
+
+
+
+                // Clean the text for Excel/Bot
+
+                var finalRca = DataCleaner.CleanRcaContent(rcaRaw);
+
+                var finalWorkaround = CleanRcaContent(workaroundRaw);
+
+
+
+                //if (!string.IsNullOrEmpty(rca))
+
+                //{
+
+                //    results.Add(new JiraTicket
+
+                //    {
+
+                //        //Key = issue["key"]?.ToString(),
+
+                //        //Summary = issue["fields"]?["summary"]?.ToString(),
+
+                //        //Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+
+                //        //RcaComment = rca,
+
+
+
+                //        Key = issue["key"]?.ToString(),
+
+                //        Summary = issue["fields"]?["summary"]?.ToString(),
+
+                //        Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+
+                //        RcaComment = rca ?? "No specific RCA documented",
+
+                //        Workaround = workaround ?? "No manual workaround available" 
+
+                //    });
+
+                //}
+
+                if (!string.IsNullOrEmpty(finalRca))
+
+                {
+
+                    results.Add(new JiraTicket
+
+                    {
+
+                        Key = issue["key"]?.ToString(),
+
+                        Summary = issue["fields"]?["summary"]?.ToString(),
+
+                        Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+
+                        RcaComment = finalRca ?? "No specific RCA documented",
+
+                        Workaround = finalWorkaround ?? "No manual workaround available"
+
+                    });
+
+                }
+
+            }
+
+
+
+            return results;
+
+        }
+
+
+
+
+
+this is my updated method to extract jira tickets, now what should i do for
+
+ var finalWorkaround = CleanRcaContent(workaroundRaw);
+
+Your code is looking much cleaner! Since you’re using CleanRcaContent for the workaround, you’ve probably noticed a small logical snag: that method is hardcoded to look for the starting index of "RCA:".
+
+If you pass a workaround string to it, and that string doesn't contain the word "RCA:", the method will return the whole messy text (because of that if (rcaIndex == -1) line we discussed).
+
+To handle Workarounds and RCAs efficiently using the same logic, you should make the "Target Keyword" a parameter.
+
+1. Refactor the Utility Method
+Update your DataCleaner (or wherever your cleaning logic lives) to accept the keyword you are looking for. This makes the code reusable for RCA, Workarounds, or even "Resolution:".
+
+C#
+public static string CleanContentByKeyword(string rawText, string keyword)
+{
+    if (string.IsNullOrWhiteSpace(rawText)) return rawText;
+
+    // Search for the specific keyword (RCA:, Workaround:, etc.)
+    int keywordIndex = rawText.IndexOf(keyword, StringComparison.OrdinalIgnoreCase);
+    
+    // If keyword isn't found, return the original text
+    if (keywordIndex == -1) return rawText;
+
+    // Cut everything before the keyword
+    string fromKeyword = rawText.Substring(keywordIndex);
+
+    // Stop at common email signatures/headers
+    string[] terminators = { "Regards", "From:", "Sent:", "Subject:", "Best Regards" };
+    int firstTerminator = terminators
+        .Select(t => fromKeyword.IndexOf(t, StringComparison.OrdinalIgnoreCase))
+        .Where(idx => idx != -1)
+        .DefaultIfEmpty(fromKeyword.Length)
+        .Min();
+
+    return fromKeyword.Substring(0, firstTerminator).Trim();
+}
+2. Update your FetchRcaTicketsAsync
+Now you can call the same logic twice but with different "anchors":
+
+C#
+// Clean the RCA using its keyword
+var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, "RCA:");
+
+// Clean the Workaround using its keyword
+var finalWorkaround = DataCleaner.CleanContentByKeyword(workaroundRaw, "Workaround:");
+3. Why this is the "Efficient" way:
+Consistency: Your Excel file will now look uniform. The RCA column will start with "RCA: ..." and the Workaround column will start with "Workaround: ...".
+
+No Duplicate Logic: You don't need a separate CleanWorkaroundContent method.
+
+Bot Performance: When you feed this to the XBRLSupportBot, the AI won't have to guess where the workaround starts. It sees a clean, labeled string.
+
+What to do next?
+Now that your extraction is "Clean," you are ready for Step 2: Database and Vectorization.
+
+If you keep this in Excel, the bot will be slow and hard to query. Since you are using .NET Core, your next goal should be:
+
+Create a local SQL table (or SQLite) to store these JiraTicket objects so you don't have to call the Jira API every time the bot is used.
+
+Assign "Labels": Notice in your data that some issues are about "Tags" and some are about "Login/Unlock." You should add a Category field to your JiraTicket model and use a simple C# switch or if statement to tag them based on the Summary.
+
+Quick Check: Does your JiraTicket model in the XbrlSupportBot.Models namespace already have the Workaround property? If not, make sure to add it:
+public string? Workaround { get; set; }
+
+in some jira ticket comment the rca was mentioned like -> Root Cause:
+
+
+
+using Newtonsoft.Json.Linq;
+
+using System.Net.Http.Headers;
+
+using System.Text;
+
+using ClosedXML.Excel;
+
+using XbrlSupportBot.Models;
+
+using XbrlSupportBot.Utilities;
+
+
+
+namespace XbrlSupportBot.Services
+
+{
+
+
+
+    public class JiraService : IJiraService
+
+    {
+
+        private readonly IConfiguration _config;
+
+        private readonly HttpClient _client;
+
+
+
+        public JiraService(IConfiguration config, HttpClient client)
+
+        {
+
+            _config = config;
+
+            _client = client;
+
+        }
+
+
+
+        public async Task<List<JiraTicket>> FetchRcaTicketsAsync()
+
+        {
+
+            var jira = _config.GetSection("Jira");
+
+
+
+            var auth = Convert.ToBase64String(
+
+                Encoding.ASCII.GetBytes($"{jira["Email"]}:{jira["ApiToken"]}")
+
+            );
+
+
+
+            _client.DefaultRequestHeaders.Authorization =
+
+                new AuthenticationHeaderValue("Basic", auth);
+
+
+
+
+
+            _client.DefaultRequestHeaders.Accept.Add(
+
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+
+
+
+            string jql = $"project = '{jira["ProjectKey"]}' AND status = 'Done'";
+
+            //string url = $"{jira["BaseUrl"]}/rest/api/2/search?jql={Uri.EscapeDataString(jql)}&fields=summary,priority,comment&maxResults=100";
+
+
+
+
+
+
+
+            string url =
+
+                $"{jira["BaseUrl"]}/rest/api/3/search/jql" +
+
+                $"?jql={Uri.EscapeDataString(jql)}" +
+
+                $"&fields=summary,priority,comment" +
+
+                $"&maxResults=100";
+
+
+
+            //url = "https://datatracks.atlassian.net/rest/api/2/search/jql?jql=project%20%3D%20%27SWSUP%27%20AND%20status%20%3D%20%27Done%27&fields=summary,priority,comment&maxResults=100";
+
+
+
+            var response = await _client.GetStringAsync(url);
+
+            var json = JObject.Parse(response);
+
+
+
+
+
+            //if (!response.IsSuccessStatusCode)
+
+            //{
+
+            //    throw new Exception($"Jira error {response.StatusCode}: {content}");
+
+            //}
+
+
+
+
+
+            var results = new List<JiraTicket>();
+
+
+
+            foreach (var issue in json["issues"])
+
+            {
+
+                //var comments = issue["fields"]?["comment"]?["comments"];
+
+                //var allComments = issue["fields"]?["comment"]?["comments"]?.Select(c => c["body"]?.ToString()).ToList();
+
+                var rawComments = issue["fields"]?["comment"]?["comments"]?
+
+                      .Select(c => DataCleaner.ConvertAdfToText(c["body"]))
+
+                      .ToList();
+
+
+
+                // Identify a Workaround (often mentioned by Testing/Support)
+
+                //var workaround = allComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+
+                var workaroundRaw = rawComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+
+                
+
+                // Identify the RCA
+
+                //var rca = allComments?.FirstOrDefault(c => c.Contains("RCA:", StringComparison.OrdinalIgnoreCase));
+
+                var rcaRaw = rawComments?.FirstOrDefault(c => c.Contains("RCA:", StringComparison.OrdinalIgnoreCase));
+
+
+
+                //var rca = comments?
+
+                //    .FirstOrDefault(c => c["body"]?.ToString()
+
+                //    .Contains("RCA:", StringComparison.OrdinalIgnoreCase) == true)?["body"]?.ToString();
+
+
+
+                // Clean the text for Excel/Bot
+
+                var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, "RCA:");
+
+                var finalWorkaround = DataCleaner.CleanContentByKeyword(workaroundRaw, "Workaround:");
+
+
+
+               
+
+                if (!string.IsNullOrEmpty(finalRca))
+
+                {
+
+                    results.Add(new JiraTicket
+
+                    {
+
+                        Key = issue["key"]?.ToString(),
+
+                        Summary = issue["fields"]?["summary"]?.ToString(),
+
+                        Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+
+                        RcaComment = finalRca ?? "No specific RCA documented",
+
+                        Workaround = finalWorkaround ?? "No manual workaround available"
+
+                    });
+
+                }
+
+            }
+
+
+
+            return results;
+
+        }
+
+    }
+
+
+
+}
+
+
+
+using Newtonsoft.Json.Linq;
+
+using System.Linq;
+
+using System.Text.RegularExpressions;
+
+
+
+namespace XbrlSupportBot.Utilities
+
+{
+
+    public static class DataCleaner
+
+    {
+
+        
+
+        public static string ConvertAdfToText(JToken adf)
+
+        {
+
+            if (adf == null || !adf.HasValues && adf.Type != JTokenType.String)
+
+                return string.Empty;
+
+
+
+            // Handle API v2 (Plain text)
+
+            if (adf.Type == JTokenType.String)
+
+                return adf.ToString();
+
+
+
+            // Handle API v3 (ADF JSON)
+
+            // Use (string) cast to avoid extra double quotes in the text
+
+            var textNodes = adf.SelectTokens("..text")
+
+                               .Select(t => (string)t)
+
+                               .Where(t => !string.IsNullOrWhiteSpace(t));
+
+
+
+            return string.Join(" ", textNodes).Trim();
+
+        }
+
+
+
+        public static string CleanContentByKeyword(string rawText, string keyword)
+
+        {
+
+            if (string.IsNullOrWhiteSpace(rawText)) return rawText;
+
+
+
+            // Look for where "RCA:" starts
+
+            int keywordIndex = rawText.IndexOf(keyword, StringComparison.OrdinalIgnoreCase);
+
+            if (keywordIndex == -1) return rawText;
+
+
+
+            // Cut everything before "RCA:"
+
+            string fromContent = rawText.Substring(keywordIndex);
+
+
+
+            // 1. Split at common email headers to remove the 'tail'
+
+            // Stop at common email signatures/headers
+
+            string[] terminators = { "Regards", "From:", "Sent:", "Subject:", "Best Regards" };
+
+            int firstTerminator = terminators
+
+                .Select(t => fromContent.IndexOf(t, StringComparison.OrdinalIgnoreCase))
+
+                .Where(idx => idx != -1)
+
+                .DefaultIfEmpty(fromContent.Length)
+
+                .Min();
+
+
+
+            // 2. Remove extra whitespace and newlines
+
+            //string cleaned = Regex.Replace(fromRca, @"\s+", " ").Trim();
+
+
+
+            //return cleaned;
+
+
+
+
+
+            return fromContent.Substring(0, firstTerminator).Trim();
+
+        }
+
+    }
+
+}
+
+
+
+this is my current code, now how should i find the rca or Root Cause: or the solution steps whichever mentioned ? what if there is no RCA or Root Cause: mentioned but there will be the solution steps in some way?
+
+Since your data comes from humans, they won't always use the exact "RCA:" tag. To catch "Root Cause:", "RCA:", or even tickets where they just describe the fix without a tag, we need to upgrade your logic from "Exact Keyword Match" to "Priority Search."
+
+Here is the strategy to make your JiraService more robust.
+
+1. The Multi-Keyword "Anchor" Search
+Instead of looking for just one keyword, we should check for a list of common "Solution" indicators. We will look for the best one available in the comments.
+
+Update your FetchRcaTicketsAsync loop logic:
+
+C#
+// Define keywords that signal useful knowledge
+string[] rcaMarkers = { "RCA:", "Root Cause:", "Resolution:", "Fix:", "Solution:" };
+
+// Find the first comment that contains ANY of these markers
+var rcaRaw = rawComments?.FirstOrDefault(c => 
+    rcaMarkers.Any(marker => c.Contains(marker, StringComparison.OrdinalIgnoreCase))
+);
+
+// If no specific marker is found, fall back to the longest comment 
+// (Useful for tickets where they just say "I did X and Y" without a tag)
+if (string.IsNullOrEmpty(rcaRaw) && rawComments?.Any() == true)
+{
+    rcaRaw = rawComments.OrderByDescending(c => c.Length).First();
+}
+
+// Clean it using the marker that was actually found
+string foundMarker = rcaMarkers.FirstOrDefault(m => 
+    rcaRaw?.Contains(m, StringComparison.OrdinalIgnoreCase) == true) ?? "";
+
+var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, foundMarker);
+2. Upgrading CleanContentByKeyword to handle "No Marker"
+If there is no "RCA:" or "Root Cause:" text, your current cleaner returns the whole string. We should refine it so that even if a marker is missing, it still trims the "Email Tail" (the "Regards" and "From" sections).
+
+C#
+public static string CleanContentByKeyword(string rawText, string keyword)
+{
+    if (string.IsNullOrWhiteSpace(rawText)) return rawText;
+
+    string contentToClean = rawText;
+
+    // If a keyword was found, start the string from that keyword
+    if (!string.IsNullOrEmpty(keyword))
+    {
+        int keywordIndex = rawText.IndexOf(keyword, StringComparison.OrdinalIgnoreCase);
+        if (keywordIndex != -1)
+        {
+            contentToClean = rawText.Substring(keywordIndex);
+        }
+    }
+
+    // Always strip the email 'tail' regardless of whether a keyword was found
+    string[] terminators = { "Regards", "From:", "Sent:", "Subject:", "Best Regards" };
+    
+    int firstTerminator = terminators
+        .Select(t => contentToClean.IndexOf(t, StringComparison.OrdinalIgnoreCase))
+        .Where(idx => idx != -1)
+        .DefaultIfEmpty(contentToClean.Length)
+        .Min();
+
+    return contentToClean.Substring(0, firstTerminator).Trim();
+}
+3. How this improves your Data Quality
+This new logic handles three specific real-world scenarios:
+
+Standard Tagging: Finds RCA: The tag was wrong. -> Cleans it.
+
+Variations: Finds Root Cause: Hierarchy issue. -> Cleans it.
+
+The "Implicit" Fix: A developer writes a long explanation but forgets to type "RCA". Your code will now pick up the longest comment (usually the technical explanation) and still strip away the signatures/headers, giving you the "meat" of the solution.
+
+4. Handling "Solution Steps" (The Workflow)
+If a ticket has a sequence of steps (e.g., "Step 1: Open Rainbow, Step 2: ..."), these are gold for XBRLSupportBot.
+
+Recommendation: In your JiraTicket model, consider adding a bool IsVerifiedKnowledge.
+
+If a ticket has a clear RCA: or Root Cause:, set it to true.
+
+If you had to guess by picking the "longest comment," set it to false.
+
+In your React frontend, you can then show a "Verified" badge next to the RCA, helping your team trust the AI more.
+
+What to do next?
+Now that you are catching "Root Cause:" and "RCA:", you should look at Taxonomy Extraction.
+
+In your comments, you have element names like DescriptionOfAccountingPolicy.... To make the bot truly performant, your .NET service should try to identify these elements.
+
+Would you like me to show you how to write a Regex to extract these XBRL Element names from the comments so you can index them for faster searching?
+
+ var rcaRaw = rawComments?.FirstOrDefault(c =>
+
+     rcaMarkers.Any(marker => c.Contains(marker, StringComparison.OrdinalIgnoreCase))
+
+ );
+
+
+
+does this code fetches only the first recent comment?
+
+To answer your question directly: No, it does not necessarily fetch the "most recent" comment. It fetches the first comment in the list that happens to contain one of your keywords.
+
+In the Jira API, the comments array is typically returned in chronological order (oldest first). Therefore, your current code is actually looking for the oldest comment that contains a marker.
+
+Here is a breakdown of how to control which comment you get:
+
+1. Understanding FirstOrDefault in your list
+When you call .FirstOrDefault() on rawComments, it starts at index [0] and moves forward.
+
+If the developer wrote an RCA in the first comment, you get that.
+
+If the developer wrote an RCA in the fifth comment, you get that.
+
+The Problem: If there are two comments with "RCA:", it will ignore the newer one and give you the older one.
+
+2. How to get the "Most Recent" RCA
+In support tickets, the final comment is usually the most accurate. To get the latest comment that contains a marker, you should use .LastOrDefault():
+
+C#
+var rcaRaw = rawComments?
+    .LastOrDefault(c => rcaMarkers.Any(marker => 
+        c.Contains(marker, StringComparison.OrdinalIgnoreCase)));
+3. The "Chronology" Logic
+If you want to be extremely precise about "Recency," you should look at the rawComments list as a timeline:
+
+Index	Comment Content	Your Current Code (First)	Improved Code (Last)
+[0] (Oldest)	"Looking into it."	Skip	Skip
+[1]	"RCA: Preliminary check shows tag error."	This is what you get.	Skip
+[2]	"Update: It wasn't the tag, it was hierarchy."	Skip	Skip
+[3] (Newest)	"RCA: Confirmed Hierarchy issue in Sec 5."	Ignore	This is what you get.
+4. Recommendation for XBRLSupportBot
+Since you are building an AI tool, you actually want the most information-dense comment, which isn't always the newest or the oldest.
+
+I suggest a "Best Match" approach instead of just a "First" or "Last" approach. You can use .OrderByDescending to find the comment that is most likely to be the real solution:
+
+C#
+var rcaRaw = rawComments?
+    .Where(c => rcaMarkers.Any(m => c.Contains(m, StringComparison.OrdinalIgnoreCase)))
+    .OrderByDescending(c => c.Length) // The longest RCA is usually the most detailed
+    .FirstOrDefault();
+Summary of what to change:
+Use .LastOrDefault(...) if you want the final word from the developer.
+
+Use .OrderByDescending(c => c.Length) if you want the most detailed explanation for the AI to learn from.
+
+Check your Jira API sorting: Note that your URL string can include &expand=renderedBody&order=created. However, since you are already processing the list in C#, the .LastOrDefault() method is the easiest "fix" to ensure you aren't getting stale, early-stage RCAs.
+
+
+
+as you can see below the comments are showing in descending order in Jira(Chrome Browser) that is latest first order,
+
+
+
+Swaminathan Suresh Subramani
+
+
+
+March 30, 2026 at 3:12 AM
+
+Thank you for the prompt response, Uma.
+
+
+
+Regards,
+
+
+
+Swaminathan Suresh
+
+Chief Technology Officer
+
+DataTracks Global
+
+
+
+<http://www.datatracks.com/>
+
+www.datatracks.com<http://www.datatracks.com/>
+
+
+
++91 87544 64573 | +91 44 4008 9000, Ext: 330
+
+cto@datatracks.com<cto@datatracks.com>
+
+
+
+This email and any attachments are confidential and intended only for the named recipient(s). If you are not the intended recipient, please notify the sender, delete it, and do not share or use its contents without written consent from DataTracks.
+
+
+
+From: umamaheswari <umamaheswari.m@dtracks.in>
+
+Sent: 29 March 2026 23:46
+
+To: Kalangiyam N <kalangiyam.n@dtracks.in>
+
+Cc: Saju V Antony <saju@datatracks.com>; USXBRLTL <usxbrltl@datatracks.com>; 'usxbrlteam' <usxbrlteam@dtracks.in>; sathishkumar.sambath@dtracks.in; Preprod@datatracks.com; Testing Team <testingteam@dtracks.in>; Suresh Swaminathan <suresh@datatracks.com>; Kalangiyam N <kalangiyam.n@dtracks.in>; Baskar P <baskar.p@datatracks.com>; ram.s@dtracks.in
+
+Subject: RE: Unable to Generate Output in Rainbow Application [P2]
+
+
+
+Hi Team,
+
+
+
+Now we can generate output. Please check.
+
+
+
+Root Cause:
+
+The issue occurred due to the Parent ID and Child ID being the same in the database. Specifically, in the EntityDomain, the same ID was present for the element where the role was set as Cover Page, which caused the inconsistency. As of now we removed that element.
+
+
+
+Current Status:
+
+The fix has been successfully implemented in the Rainbow UAT environment.
+
+
+
+Next Steps:
+
+The fix will be applied during the next production deployment.
+
+
+
+Thanks,
+
+Umamaheswari M
+
+
+
+From: Suresh Swaminathan suresh@datatracks.com
+
+Sent: Sunday, March 29, 2026 20:18
+
+To: Kalangiyam N <kalangiyam.n@dtracks.in<kalangiyam.n@dtracks.in>>; Umamaheswari <umamaheswari.m@dtracks.in<umamaheswari.m@dtracks.in>>
+
+Cc: Saju V Antony <saju@datatracks.com<saju@datatracks.com>>
+
+Subject: FW: Unable to Generate Output in Rainbow Application [P2]
+
+
+
+FYI
+
+
+
+Swaminathan Suresh
+
+Chief Technology Officer
+
+DataTracks Global
+
+
+
+<http://www.datatracks.com/>
+
+www.datatracks.com<http://www.datatracks.com/>
+
+
+
++91 87544 64573 | +91 44 4008 9000, Ext: 330
+
+cto@datatracks.com<cto@datatracks.com>
+
+
+
+This email and any attachments are confidential and intended only for the named recipient(s). If you are not the intended recipient, please notify the sender, delete it, and do not share or use its contents without written consent from DataTracks.
+
+
+
+From: Preprod@datatracks.com<Preprod@datatracks.com> <preprod@datatracks.com<preprod@datatracks.com>>
+
+Sent: 29 March 2026 16:47
+
+To: Software Support <softwaresupport@datatracks.com<softwaresupport@datatracks.com>>
+
+Cc: USXBRLTL <usxbrltl@datatracks.com<usxbrltl@datatracks.com>>; usxbrlteam <usxbrlteam@dtracks.in<usxbrlteam@dtracks.in>>; sathishkumar.sambath@dtracks.in<sathishkumar.sambath@dtracks.in>; Preprod@datatracks.com<Preprod@datatracks.com>; Testing Team <testingteam@dtracks.in<testingteam@dtracks.in>>
+
+Subject: Unable to Generate Output in Rainbow Application [P2]
+
+
+
+Hi Software Support Team,
+
+We are currently unable to generate output in the Rainbow application for the job mentioned below:
+
+
+
+  Entity: Churchill Capital Corp X / Cayman
+
+
+
+  WS ID: 10-K_12_2025_13
+
+
+
+  Rainbow URL: http://10.9.9.68:1800<https://10.9.9.68:1800/>
+
+Please let me know if you require any additional details from my side to assist with troubleshooting.
+
+Thank you for your support.
+
+
+
+Regards,
+
+Barathraj S
+
+
+
+Preproduction
+
+DataTracks Global
+
+
+
+<http://www.datatracks.com/>
+
+www.datatracks.com<http://www.datatracks.com/>
+
+
+
++91 44 4008 9000, Ext: 203, 328
+
+preprod@datatracks.com<preprod@datatracks.com>
+
+
+
+This email and any attachments are confidential and intended only for the named recipient(s). If you are not the intended recipient, please notify the sender, delete it, and do not share or use its contents without written consent from DataTracks.
+
+
+
+From: sathishkumar.sambath@dtracks.in<sathishkumar.sambath@dtracks.in> <sathishkumar.sambath@dtracks.in<sathishkumar.sambath@dtracks.in>>
+
+Sent: Sunday, March 29, 2026 3:31 PM
+
+To: Preprod@datatracks.com<Preprod@datatracks.com>
+
+Cc: USXBRLTL <usxbrltl@datatracks.com<usxbrltl@datatracks.com>>; usxbrlteam <usxbrlteam@dtracks.in<usxbrlteam@dtracks.in>>
+
+Subject: Draft changes | Dolphin | V6| 94946_Churchill Capital Corp X/Cayman
+
+
+
+Hi Team,
+
+
+
+Please process Draft changes for the below job in the mentioned workspace.
+
+
+
+Program
+
+
+
+Dolphin
+
+
+
+Job Number
+
+94946
+
+
+
+Filing Type
+
+
+
+iXBRL
+
+
+
+Process Request
+
+
+
+Draft changes
+
+
+
+Entity
+
+
+
+Churchill Capital Corp X/Cayman
+
+
+
+WS ID
+
+10-K_12_2025_13
+
+
+
+Other
+
+URL: http://10.9.9.68:1800<http://10.9.9.68:1800>
+
+
+
+XBRL ETA
+
+03-29-26 04:30 PM
+
+
+
+Regards,
+
+Sathish Kumar S
+
+
+
+Reviewer, Services Delivery
+
+DataTracks Global
+
+
+
+<http://www.datatracks.com/>
+
+
+
+www.datatracks.com<http://www.datatracks.com/>
+
+
+
++91 44 4008 9000, Ext: 207
+
+
+
+
+
+
+
+
+
+
+
+Swaminathan Suresh Subramani
+
+
+
+March 29, 2026 at 8:07 PM
+
+Saju, as discussed, please indicate the support team member who is working on resolving the issue.
+
+
+
+Regards,
+
+
+
+Swaminathan Suresh
+
+Chief Technology Officer
+
+DataTracks Global
+
+
+
+<http://www.datatracks.com/>
+
+www.datatracks.com<http://www.datatracks.com/>
+
+
+
++91 87544 64573 | +91 44 4008 9000, Ext: 330
+
+cto@datatracks.com<cto@datatracks.com>
+
+
+
+This email and any attachments are confidential and intended only for the named recipient(s). If you are not the intended recipient, please notify the sender, delete it, and do not share or use its contents without written consent from DataTracks.
+
+
+
+From: Preprod@datatracks.com <preprod@datatracks.com>
+
+Sent: 29 March 2026 16:47
+
+To: Software Support <softwaresupport@datatracks.com>
+
+Cc: USXBRLTL <usxbrltl@datatracks.com>; usxbrlteam <usxbrlteam@dtracks.in>; sathishkumar.sambath@dtracks.in; Preprod@datatracks.com; Testing Team <testingteam@dtracks.in>
+
+Subject: Unable to Generate Output in Rainbow Application [P2]
+
+
+
+Hi Software Support Team,
+
+We are currently unable to generate output in the Rainbow application for the job mentioned below:
+
+
+
+  Entity: Churchill Capital Corp X / Cayman
+
+
+
+  WS ID: 10-K_12_2025_13
+
+
+
+  Rainbow URL: http://10.9.9.68:1800<https://10.9.9.68:1800/>
+
+Please let me know if you require any additional details from my side to assist with troubleshooting.
+
+Thank you for your support.
+
+
+
+Regards,
+
+Barathraj S
+
+
+
+Preproduction
+
+DataTracks Global
+
+
+
+<http://www.datatracks.com/>
+
+www.datatracks.com<http://www.datatracks.com/>
+
+
+
++91 44 4008 9000, Ext: 203, 328
+
+preprod@datatracks.com<preprod@datatracks.com>
+
+
+
+This email and any attachments are confidential and intended only for the named recipient(s). If you are not the intended recipient, please notify the sender, delete it, and do not share or use its contents without written consent from DataTracks.
+
+
+
+From: sathishkumar.sambath@dtracks.in<sathishkumar.sambath@dtracks.in> <sathishkumar.sambath@dtracks.in<sathishkumar.sambath@dtracks.in>>
+
+Sent: Sunday, March 29, 2026 3:31 PM
+
+To: Preprod@datatracks.com<Preprod@datatracks.com>
+
+Cc: USXBRLTL <usxbrltl@datatracks.com<usxbrltl@datatracks.com>>; usxbrlteam <usxbrlteam@dtracks.in<usxbrlteam@dtracks.in>>
+
+Subject: Draft changes | Dolphin | V6| 94946_Churchill Capital Corp X/Cayman
+
+
+
+Hi Team,
+
+
+
+Please process Draft changes for the below job in the mentioned workspace.
+
+
+
+Program
+
+
+
+Dolphin
+
+
+
+Job Number
+
+94946
+
+
+
+Filing Type
+
+
+
+iXBRL
+
+
+
+Process Request
+
+
+
+Draft changes
+
+
+
+Entity
+
+
+
+Churchill Capital Corp X/Cayman
+
+
+
+WS ID
+
+10-K_12_2025_13
+
+
+
+Other
+
+URL: http://10.9.9.68:1800<http://10.9.9.68:1800>
+
+
+
+XBRL ETA
+
+03-29-26 04:30 PM
+
+
+
+Regards,
+
+Sathish Kumar S
+
+
+
+Reviewer, Services Delivery
+
+DataTracks Global
+
+
+
+<http://www.datatracks.com/>
+
+
+
+www.datatracks.com<http://www.datatracks.com/>
+
+
+
++91 44 4008 9000, Ext: 207
+
+
+
+as you can see the Root Cause is in 2nd comment made by Uma, but in Jira it is only getting 1st comment ->
+
+
+
+  SWSUP-10
+
+Unable to Generate Output in Rainbow
+
+Application [P2]
+
+Medium
+
+Thank you for the prompt response, Uma.
+
+
+
+Why is this?
+
+
+
+my code ->
+
+        public async Task<List<JiraTicket>> FetchRcaTicketsAsync()
+
+        {
+
+            var jira = _config.GetSection("Jira");
+
+
+
+            var auth = Convert.ToBase64String(
+
+                Encoding.ASCII.GetBytes($"{jira["Email"]}:{jira["ApiToken"]}")
+
+            );
+
+
+
+            _client.DefaultRequestHeaders.Authorization =
+
+                new AuthenticationHeaderValue("Basic", auth);
+
+
+
+
+
+            _client.DefaultRequestHeaders.Accept.Add(
+
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+
+
+
+            string jql = $"project = '{jira["ProjectKey"]}' AND status = 'Done'";
+
+            //string url = $"{jira["BaseUrl"]}/rest/api/2/search?jql={Uri.EscapeDataString(jql)}&fields=summary,priority,comment&maxResults=100";
+
+
+
+
+
+
+
+            string url =
+
+                $"{jira["BaseUrl"]}/rest/api/3/search/jql" +
+
+                $"?jql={Uri.EscapeDataString(jql)}" +
+
+                $"&fields=summary,priority,comment" +
+
+                $"&maxResults=100";
+
+
+
+            //url = "https://datatracks.atlassian.net/rest/api/2/search/jql?jql=project%20%3D%20%27SWSUP%27%20AND%20status%20%3D%20%27Done%27&fields=summary,priority,comment&maxResults=100";
+
+
+
+            var response = await _client.GetStringAsync(url);
+
+            var json = JObject.Parse(response);
+
+
+
+
+
+            //if (!response.IsSuccessStatusCode)
+
+            //{
+
+            //    throw new Exception($"Jira error {response.StatusCode}: {content}");
+
+            //}
+
+
+
+            // Define keywords that signal useful knowledge
+
+            string[] rcaMarkers = { "RCA:", "Root Cause:", "Resolution:", "Fix:", "Solution:" };
+
+
+
+            var results = new List<JiraTicket>();
+
+
+
+            foreach (var issue in json["issues"])
+
+            {
+
+                //var comments = issue["fields"]?["comment"]?["comments"];
+
+                //var allComments = issue["fields"]?["comment"]?["comments"]?.Select(c => c["body"]?.ToString()).ToList();
+
+                var rawComments = issue["fields"]?["comment"]?["comments"]?
+
+                      .Select(c => DataCleaner.ConvertAdfToText(c["body"]))
+
+                      .ToList();
+
+
+
+                // Identify a Workaround (often mentioned by Testing/Support)
+
+                //var workaround = allComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+
+                var workaroundRaw = rawComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+
+                
+
+                // Identify the RCA
+
+                //var rca = allComments?.FirstOrDefault(c => c.Contains("RCA:", StringComparison.OrdinalIgnoreCase));
+
+                //var rcaRaw = rawComments?.FirstOrDefault(c => c.Contains("RCA:", StringComparison.OrdinalIgnoreCase));
+
+                // Find the first comment that contains ANY of these markers
+
+                var rcaRaw = rawComments?.FirstOrDefault(c =>
+
+                    rcaMarkers.Any(marker => c.Contains(marker, StringComparison.OrdinalIgnoreCase))
+
+                );
+
+                if (string.IsNullOrEmpty(rcaRaw) && rawComments?.Any() == true)
+
+                {
+
+                    rcaRaw = rawComments.OrderByDescending(c => c.Length).First();
+
+                }
+
+                //var rca = comments?
+
+                //    .FirstOrDefault(c => c["body"]?.ToString()
+
+                //    .Contains("RCA:", StringComparison.OrdinalIgnoreCase) == true)?["body"]?.ToString();
+
+
+
+                // Clean the text for Excel/Bot
+
+                var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, "RCA:");
+
+                var finalWorkaround = DataCleaner.CleanContentByKeyword(workaroundRaw, "Workaround:");
+
+
+
+               
+
+                if (!string.IsNullOrEmpty(finalRca))
+
+                {
+
+                    results.Add(new JiraTicket
+
+                    {
+
+                        Key = issue["key"]?.ToString(),
+
+                        Summary = issue["fields"]?["summary"]?.ToString(),
+
+                        Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+
+                        RcaComment = finalRca ?? "No specific RCA documented",
+
+                        Workaround = finalWorkaround ?? "No manual workaround available"
+
+                    });
+
+                }
+
+            }
+
+
+
+            return results;
+
+        }
+
+The reason you are seeing the first (unhelpful) comment is due to a logical conflict in how the code decides which comment to pick when the primary search fails.
+
+Here is exactly what is happening in your code for SWSUP-10:
+
+The Marker Search: Your code looks for "RCA:", "Root Cause:", etc. In Uma's comment, she wrote "Root Cause:" (with a space). If your rcaMarkers array only has "Root Cause:" but the text is formatted differently, or if FirstOrDefault picks something else first, it moves to the fallback.
+
+The Fallback Trap: Because the marker search didn't find an exact match in the first comment it checked, it hit this block:
+rcaRaw = rawComments.OrderByDescending(c => c.Length).First();
+
+The Result: Swaminathan's first comment "Thank you for the prompt response..." is actually longer in total character count (because of the massive email signature and disclaimer footer) than Uma's technical note. Therefore, the code thinks the "Thank you" comment is the most "information-dense" one and picks it.
+
+The Fix
+To fix this, we need to do three things:
+
+Correct the keyword matching.
+
+Search the entire list for markers first before falling back to length.
+
+Identify which marker was actually found so the cleaner knows where to cut.
+
+Update your foreach loop with this logic:
+
+C#
+foreach (var issue in json["issues"])
+{
+    var rawComments = issue["fields"]?["comment"]?["comments"]?
+          .Select(c => DataCleaner.ConvertAdfToText(c["body"]))
+          .ToList();
+
+    string rcaRaw = null;
+    string detectedMarker = "";
+
+    // 1. Look specifically for comments containing markers in the WHOLE list first
+    var commentWithMarker = rawComments?.FirstOrDefault(c => 
+        rcaMarkers.Any(m => c.Contains(m, StringComparison.OrdinalIgnoreCase)));
+
+    if (commentWithMarker != null)
+    {
+        rcaRaw = commentWithMarker;
+        // Identify which marker was used so we can clean it correctly
+        detectedMarker = rcaMarkers.FirstOrDefault(m => 
+            rcaRaw.Contains(m, StringComparison.OrdinalIgnoreCase));
+    }
+    // 2. ONLY if no marker is found in ANY comment, fall back to the longest one
+    else if (rawComments?.Any() == true)
+    {
+        rcaRaw = rawComments.OrderByDescending(c => c.Length).First();
+    }
+
+    // 3. Clean using the detected marker (or empty string if we fell back to length)
+    var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, detectedMarker);
+    var finalWorkaround = DataCleaner.CleanContentByKeyword(workaroundRaw, "Workaround:");
+
+    if (!string.IsNullOrEmpty(finalRca))
+    {
+        results.Add(new JiraTicket
+        {
+            Key = issue["key"]?.ToString(),
+            Summary = issue["fields"]?["summary"]?.ToString(),
+            Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+            RcaComment = finalRca,
+            Workaround = finalWorkaround ?? "No manual workaround available"
+        });
+    }
+}
+Why this works for your specific example:
+Marker Detection: It will find "Root Cause:" in Uma's comment regardless of the order.
+
+Precision Cleaning: By passing detectedMarker (e.g., "Root Cause:") into CleanContentByKeyword, the code will correctly strip out everything before the words "Root Cause:".
+
+Signature Prevention: Because CleanContentByKeyword (which we updated in the previous step) looks for "Regards" or "From:", it will chop off Swaminathan's and Uma's signatures, leaving only the technical explanation.
+
+Pro Tip: In your rcaMarkers array, ensure you have both "Root Cause:" and "Root Cause :" (with a space before the colon) just in case users type it differently!
+
+the excel it is writing the exported jira tickets, if the excel file is opened it is not writing the newly fetched data, and not throwing any error as well, how to handle it?
+
+
+
+using ClosedXML.Excel;
+
+using XbrlSupportBot.Models;
+
+
+
+namespace XbrlSupportBot.Services
+
+{
+
+    public class ExcelService
+
+    {
+
+        private readonly IConfiguration _config;
+
+
+
+        public ExcelService(IConfiguration config)
+
+        {
+
+            _config = config;
+
+        }
+
+
+
+        public void Export(List<JiraTicket> tickets)
+
+        {
+
+            var path = _config["FilePaths:ExcelPath"];
+
+
+
+            using var workbook = new XLWorkbook();
+
+            var ws = workbook.Worksheets.Add("RCA Data");
+
+
+
+            ws.Cell(1, 1).Value = "Key";
+
+            ws.Cell(1, 2).Value = "Summary";
+
+            ws.Cell(1, 3).Value = "Priority";
+
+            ws.Cell(1, 4).Value = "RCA";
+
+
+
+            int row = 2;
+
+
+
+            foreach (var t in tickets)
+
+            {
+
+                ws.Cell(row, 1).Value = t.Key;
+
+                ws.Cell(row, 2).Value = t.Summary;
+
+                ws.Cell(row, 3).Value = t.Priority;
+
+                ws.Cell(row, 4).Value = t.RcaComment;
+
+                row++;
+
+            }
+
+
+
+            workbook.SaveAs(path);
+
+        }
+
+    }
+
+}
+
+The reason your code isn't throwing an error is likely because the exception is being swallowed further up the call stack, or the OS is preventing the SaveAs method from completing. When an Excel file is open in a desktop application (like Microsoft Excel), the Windows OS places a File Lock on it. ClosedXML cannot overwrite a file that is currently locked by another process.
+
+To handle this gracefully, you should implement a check to see if the file is accessible and provide a clear error message or a retry mechanism.
+
+1. The "File Access" Check
+You can create a helper method to detect if the file is locked before you even start the export process.
+
+C#
+private bool IsFileLocked(string filePath)
+{
+    try
+    {
+        using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+        {
+            stream.Close();
+        }
+    }
+    catch (IOException)
+    {
+        // The file is unavailable because it is:
+        // 1. Still being written to
+        // 2. Open in another program (Excel)
+        return true;
+    }
+    return false;
+}
+2. Implementation in your ExcelService
+Update your Export method to handle the lock. Instead of failing silently, you can throw a custom exception or use a timestamped filename as a backup.
+
+C#
+public void Export(List<JiraTicket> tickets)
+{
+    var path = _config["FilePaths:ExcelPath"];
+
+    // 1. Check if file is open
+    if (File.Exists(path) && IsFileLocked(path))
+    {
+        // Option A: Throw an explicit error to the UI
+        throw new Exception($"The file '{Path.GetFileName(path)}' is currently open in Excel. Please close it and try again.");
+        
+        // Option B: (Alternative) Save as a new version automatically
+        // path = path.Replace(".xlsx", $"_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
+    }
+
+    try 
+    {
+        using var workbook = new XLWorkbook();
+        var ws = workbook.Worksheets.Add("RCA Data");
+
+        // Headers
+        ws.Cell(1, 1).Value = "Key";
+        ws.Cell(1, 2).Value = "Summary";
+        ws.Cell(1, 3).Value = "Priority";
+        ws.Cell(1, 4).Value = "RCA";
+        ws.Cell(1, 5).Value = "Workaround"; // Don't forget your new column!
+
+        int row = 2;
+        foreach (var t in tickets)
+        {
+            ws.Cell(row, 1).Value = t.Key;
+            ws.Cell(row, 2).Value = t.Summary;
+            ws.Cell(row, 3).Value = t.Priority;
+            ws.Cell(row, 4).Value = t.RcaComment;
+            ws.Cell(row, 5).Value = t.Workaround;
+            row++;
+        }
+
+        ws.Columns().AdjustToContents(); // Make it look professional
+        workbook.SaveAs(path);
+    }
+    catch (Exception ex)
+    {
+        // Log the actual error
+        Console.WriteLine($"Export failed: {ex.Message}");
+        throw; 
+    }
+}
+3. Better Strategy: Generate a unique name
+Since multiple people might use the XBRLSupportBot, having one fixed file path is risky. A better approach for a support team is to generate a file with the current date or a unique ID:
+
+C#
+// Example: RCA_Export_2026-04-29.xlsx
+var fileName = $"RCA_Export_{DateTime.Now:yyyy-MM-dd}.xlsx";
+var path = Path.Combine(_config["FilePaths:ExportFolder"], fileName);
+Summary of Changes
+Validation: Added a check to see if the file is locked by the OS.
+
+Feedback: Added a try-catch block so if something goes wrong, your application actually knows about it.
+
+UI/UX: Added AdjustToContents() so the columns automatically resize to fit the long RCA text Uma and others are providing.
+
+Quick Tip: If you are running this in a web environment (ASP.NET Core), you shouldn't save to a local path at all. Instead, you should return the Excel file as a FileResult directly to the browser so the user downloads their own copy!
+
+From: Preprod@datatracks.com
+
+<preprod@datatracks.com>
+
+Sent: 29 March 2026 16:47
+
+To: Software Support <softwaresupport@datatracks.com>
+
+Cc: USXBRLTL <usxbrltl@datatracks.com>;
+
+usxbrlteam <usxbrlteam@dtracks.in>;sathishkumar.sambath@dtracks.in;Preprod@datatracks.com; Testing
+
+Team <testingteam@dtracks.in>
+
+Subject: Unable to Generate Output in Rainbow Application [P2]
+
+ 
+
+Hi Software
+
+Support Team,
+
+We are currently unable to generate
+
+output in the Rainbow application for the job mentioned below:
+
+
+
+
+
+Entity: Churchill Capital Corp X / Cayman
+
+
+
+WS
+
+ID: 10-K_12_2025_13
+
+
+
+Rainbow
+
+URL: http://10.9.9.68:1800
+
+Please let me know if you require
+
+any additional details from my side to assist with troubleshooting.
+
+Thank you for your support.
+
+ 
+
+ 
+
+Regards,
+
+Barathraj S
+
+ 
+
+Preproduction
+
+DataTracks Global
+
+ 
+
+
+
+www.datatracks.com
+
+ 
+
++91
+
+44 4008 9000, Ext: 203, 328
+
+preprod@datatracks.com
+
+ 
+
+This email and any attachments are confidential and intended only
+
+for the named recipient(s). If you are not the intended recipient, please
+
+notify the sender, delete it, and do not share or use its contents without
+
+written consent from DataTracks.
+
+ 
+
+
+
+this how the issue ticket looks like in outlook mail, and below given is how it looks like in Jira in chrome browser ->
+
+
+
+Unable to Generate Output in Rainbow Application [P2]
+
+
+
+
+
+Description
+
+Hi Software Support Team,
+
+We are currently unable to generate output in the Rainbow application for the job mentioned below:
+
+Entity: Churchill Capital Corp X / Cayman
+
+WS ID: 10-K_12_2025_13
+
+Rainbow URL: http://10.9.9.68:1800<https://10.9.9.68:1800/>
+
+Please let me know if you require any additional details from my side to assist with troubleshooting.
+
+Thank you for your support.
+
+Regards,
+
+Barathraj S
+
+Preproduction
+
+DataTracks Global
+
+<http://www.datatracks.com/>
+
+www.datatracks.com<http://www.datatracks.com/>
+
++91 44 4008 9000, Ext: 203, 328
+
+preprod@datatracks.com<preprod@datatracks.com>
+
+This email and any attachments are confidential and intended only for the named recipient(s). If you are not the intended recipient, please notify the sender, delete it, and do not share or use its contents without written consent from DataTracks.
+
+
+
+my point is this how the issue ticket looks like, with entity name, workspace and server (rainbow url)
+
+
+
+Give me ideas to make the bot perform better by using the description also
+
+Since the Description field contains the "Fingerprint" of the issue (Entity, WS ID, and URL), it is a goldmine for making your bot smarter. Right now, your bot probably searches by general keywords, but adding these specific identifiers allows for Contextual Matching.
+
+Here are three ideas to leverage the Description for a high-performance bot:
+
+1. Extract and Index Meta-Data
+Don't just store the Description as a big block of text. Use Regex to extract the specific identifiers. When a user asks the bot, "I'm having trouble with Churchill Capital," the bot can instantly filter for that Entity.
+
+Add these fields to your JiraTicket model:
+
+EntityName
+
+WorkspaceID
+
+ServerURL
+
+Update your DataCleaner with an extraction method:
+
+C#
+public static (string Entity, string WsId) ExtractIssueContext(string description)
+{
+    var entityMatch = Regex.Match(description, @"Entity:\s*(.*)", RegexOptions.IgnoreCase);
+    var wsIdMatch = Regex.Match(description, @"WS ID:\s*(.*)", RegexOptions.IgnoreCase);
+    
+    return (
+        entityMatch.Groups[1].Value.Trim(), 
+        wsIdMatch.Groups[1].Value.Trim()
+    );
+}
+2. "Similar Issue" Clustering
+Often, the same Entity or the same Workspace ID will have recurring problems over different quarters.
+
+The Idea: When the bot finds an RCA, it should check if other tickets share the same WS ID pattern (e.g., 10-K_12_2025).
+
+The Benefit: The bot can say: "I found an RCA for this issue, and I noticed this Entity 'Churchill Capital' had a similar Parent/Child ID mismatch 3 months ago." This provides historical context that a simple keyword search misses.
+
+3. Automated Categorization (Labeling)
+Looking at the description, you can "Auto-Tag" the tickets during the import process. This helps the AI model (or your search logic) narrow down the scope.
+
+Keyword in Description	Auto-Category
+Unable to Generate Output	Output Generation
+Dolphin, Rainbow	Application Specific
+Parent ID, Child ID	Database Inconsistency
+Implementation:
+In your FetchRcaTicketsAsync, add a check:
+
+C#
+if (issueDescription.Contains("Generate Output", StringComparison.OrdinalIgnoreCase))
+{
+    ticket.Category = "Output Failure";
+}
+4. Handling the "Email Noise" in Descriptions
+Just like the comments, the Description is full of email signatures and disclaimers. If you feed this "noise" into a Vector Database or a Bot, it dilutes the search accuracy.
+
+Refine your Cleaner for Descriptions:
+Modify your CleanContentByKeyword logic to stop at Regards, or Thank you for your support. This ensures the bot only "reads" the actual problem statement:
+
+"We are currently unable to generate output in the Rainbow application for the job mentioned below..."
+
+Why this makes the bot "Perform Better":
+If a support person types: "Error in Churchill Capital WS 10-K":
+
+Current Bot: Searches for "Error", "Churchill", "Capital". It might return 50 results.
+
+Upgraded Bot: Matches the EntityName and WS ID exactly. It returns the 1 specific ticket where Uma solved the Parent/Child ID mismatch.
+
+Would you like me to help you write the Regex patterns to specifically extract those Entity names and Workspace IDs from your typical DataTracks email format?
+
+ 
+
+
+
+
+
+Product
+
+
+
+
+
+Environment
+
+
+
+
+
+Url
+
+
+
+
+
+DB Server
+
+
+
+
+
+DB Name
+
+
+
+
+
+
+
+SA
+
+
+
+
+
+Live
+
+
+
+
+
+http://10.9.9.45:8001/ 
+
+
+
+
+
+10.9.9.101
+
+
+
+
+
+[Rainbow3_SA_Prod]
+
+
+
+
+
+
+
+SA
+
+
+
+
+
+UAT
+
+
+
+
+
+http://10.9.9.29:5999/
+
+
+
+
+
+10.9.9.26
+
+
+
+
+
+[Rainbow3_SA_UAT]
+
+
+
+
+ 
+
+ 
+
+
+
+
+
+Product
+
+
+
+
+
+Environment
+
+
+
+
+
+Url
+
+
+
+
+
+DB Server
+
+
+
+
+
+DB Name
+
+
+
+
+
+
+
+ESEF
+
+
+
+
+
+Live
+
+
+
+
+
+10.9.9.135:5000
+
+
+
+
+
+10.9.9.27
+
+
+
+
+
+Rainbow3_ESEF_Prod_2
+
+
+
+
+
+
+
+ESEF
+
+
+
+
+
+Live Backup
+
+
+
+
+
+10.9.9.60:5000
+
+
+
+
+
+10.9.9.27
+
+
+
+
+
+Rainbow3_ESEF_Prod_2
+
+
+
+
+
+
+
+ESEF
+
+
+
+
+
+Live Lloyds
+
+
+
+
+
+http://10.9.9.135:4000/
+
+
+
+
+
+10.9.9.27
+
+
+
+
+
+Rainbow3_ESEF_LLYODS
+
+
+
+
+
+
+
+ESEF
+
+
+
+
+
+UAT
+
+
+
+
+
+http://10.9.9.47:5000/
+
+
+
+
+
+10.9.9.26
+
+
+
+
+
+Rainbow3_ESEF_UAT
+
+
+
+
+
+
+
+ESEF
+
+
+
+
+
+Test
+
+
+
+
+
+http:/inteseftest.datatracks.eu
+
+
+
+
+
+10.9.9.26
+
+
+
+
+
+Rainbow3_ESEF_DEV
+
+
+
+
+ 
+
+ 
+
+
+
+
+
+Product
+
+
+
+
+
+Environment
+
+
+
+
+
+Url
+
+
+
+
+
+DB Server
+
+
+
+
+
+DB Name
+
+
+
+
+
+
+
+Rainbow
+
+
+
+
+
+Live TSR
+
+
+
+
+
+http://10.9.9.68:3000/
+
+
+
+
+
+10.9.9.19
+
+
+
+
+
+Rainbow3_TSR_2
+
+
+
+
+
+
+
+Rainbow
+
+
+
+
+
+Live
+
+
+
+
+
+http://10.9.9.68:1800/
+
+
+
+
+
+10.9.9.19
+
+
+
+
+
+Rainbow3_Prod_2
+
+
+
+
+
+
+
+Rainbow
+
+
+
+
+
+Live Backup
+
+
+
+
+
+http://10.9.9.60:1800/
+
+
+
+
+
+10.9.9.19
+
+
+
+
+
+Rainbow3_Prod_2
+
+
+
+
+
+
+
+Rainbow
+
+
+
+
+
+UAT
+
+
+
+
+
+http://10.9.9.29:2000/
+
+
+
+
+
+10.9.9.26
+
+
+
+
+
+Rainbow3_UAT_S1
+
+
+
+
+
+
+
+Rainbow
+
+
+
+
+
+Test
+
+
+
+
+
+https://rainbowdev.datatracks.com/
+
+
+
+
+
+10.9.9.26
+
+
+
+
+
+Rainbow3_US_test1
+
+
+
+
+
+
+
+Rainbow
+
+
+
+
+
+Demo
+
+
+
+
+
+https://rainbow.datatracks.com/
+
+
+
+
+
+10.9.9.26
+
+
+
+
+
+Rainbow3_US_DEV
+
+
+
+
+so these are the database server and database name details for every application server, so "Similar Issue" Clustering is okay but they are already fixed and it is highly impossible the issue may arise again for that entity and workspace, but the similar issue may arise for different entity and workspace, so using "Similar Issue" Clustering knowledge the bot should help to identify the issue and help fix it, it can access the database of the application also to identify the root cause of the newly created live issue, right now i am only trying to properly insert the historical issues data in vector db, i heard of semantic kernel in .net core will it be usefull for my BOT ?
+
+This is a brilliant pivot. If you can bridge the gap between Jira historical knowledge and Live Database diagnostics, your bot moves from a simple "Search Engine" to a "Diagnostic Engineer."
+
+Since you have the mapping of Application URLs to DB Servers/Names, you have everything you need to build a "Reasoning Engine."
+
+Is Semantic Kernel (SK) useful here?
+Absolutely, yes. Semantic Kernel is the best framework for this because it is designed for "Plugins" (formerly called Skills).
+
+In Semantic Kernel, you can define "Native Functions" (C# code) that the AI can choose to run. Instead of you writing a thousand if/else statements, the AI looks at the Jira description, identifies the URL, and says: "I see this is a Rainbow Live issue. I have a tool to check the Rainbow3_Prod_2 database for Parent/Child ID mismatches. I will run that now."
+
+How the Architecture would look with Semantic Kernel
+The Planner: The AI analyzes the incoming Jira ticket.
+
+Vector Memory Plugin: It searches your Vector DB for historical RCAs (like the one Uma fixed).
+
+Database Plugin: If it finds a "Similar RCA" that mentions a DB inconsistency, it uses your mapping table to connect to the correct SQL Server and run a "Read-Only" check.
+
+The Insight: It tells the user: "Historical data suggests a Parent/Child ID mismatch. I checked the live DB for WS ID 10-K_12_2025_13 and found 2 rows where ParentID = ChildID. This confirms the issue."
+
+Step 1: Upgrading your Vector Data (The Mapping)
+To make this work, you need to enrich your JiraTicket model before it goes into the Vector DB. When you import a ticket, you should "Tag" it with the Environment metadata based on the URL in the description.
+
+Updated Model Logic:
+
+C#
+public class JiraTicket 
+{
+    // Existing fields...
+    public string Environment { get; set; } // Live, UAT, etc.
+    public string DbServer { get; set; }    // 10.9.9.19
+    public string DbName { get; set; }      // Rainbow3_Prod_2
+}
+Step 2: Creating a Semantic Kernel "Diagnostic Plugin"
+You can create a class that contains SQL diagnostic queries. SK allows the LLM to call these methods.
+
+C#
+public class RainbowDiagnosticPlugin
+{
+    [KernelFunction, Description("Checks for Parent/Child ID mismatches in the EntityDomain table")]
+    public async Task<string> CheckIdMismatch(string dbServer, string dbName, string workspaceId)
+    {
+        // 1. Construct connection string using your table data
+        // 2. Run: SELECT COUNT(*) FROM EntityDomain WHERE ParentID = ChildID AND WSID = @wsid
+        // 3. Return the result as a string for the AI to read
+    }
+}
+Why Semantic Kernel is better than standard logic:
+Dynamic Mapping: Your table has many URLs and DBs. SK handles the "Mapping" naturally. If the description mentions 10.9.9.68:1800, SK knows to pass 10.9.9.19 and Rainbow3_Prod_2 to the plugin.
+
+Chain of Thought: The bot can explain its reasoning: "I am checking the database because a similar issue (SWSUP-10) was caused by a database inconsistency."
+
+Extensibility: When you add a new product (e.g., a new "SA" environment), you just update the mapping table, and the bot automatically knows how to diagnose it.
+
+Your Immediate Next Steps:
+Refine the Vector Storage: Ensure every ticket in your Vector DB includes the DB Name and Environment it belongs to.
+
+Add Semantic Kernel: Install the Microsoft.SemanticKernel NuGet package in your .NET Core project.
+
+Define "Diagnostic Queries": Start a list of SQL queries that correspond to the RCAs you've already collected (like the Parent/Child check).
+
+One caution: Always ensure the Database Plugin uses a Read-Only credential. The bot should be an investigator, not a developer who can accidentally delete data!
+
+Does your current JiraService already have a way to identify which "Product" (SA, ESEF, Rainbow) a ticket belongs to?
+
+
+
+
+

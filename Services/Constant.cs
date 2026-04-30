@@ -14,6 +14,7 @@ namespace XbrlSupportBot.Services
     public class JiraTicket
     {
         public string? Key { get; set; } = string.Empty;
+        public string? Description { get; set; }
         public string? Summary { get; set; } = string.Empty;
         public string? Priority { get; set; } = string.Empty;
         public string? RcaComment { get; set; } = string.Empty;

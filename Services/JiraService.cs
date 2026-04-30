@@ -1,7 +1,9 @@
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Net.Http.Headers;
 using System.Text;
-using ClosedXML.Excel;
 using XbrlSupportBot.Models;
 using XbrlSupportBot.Utilities;
 
@@ -43,7 +45,7 @@ namespace XbrlSupportBot.Services
             string url =
                 $"{jira["BaseUrl"]}/rest/api/3/search/jql" +
                 $"?jql={Uri.EscapeDataString(jql)}" +
-                $"&fields=summary,priority,comment" +
+                $"&fields=description,summary,priority,comment" +
                 $"&maxResults=100";
 
             //url = "https://datatracks.atlassian.net/rest/api/2/search/jql?jql=project%20%3D%20%27SWSUP%27%20AND%20status%20%3D%20%27Done%27&fields=summary,priority,comment&maxResults=100";
@@ -58,13 +60,16 @@ namespace XbrlSupportBot.Services
             //}
 
             // Define keywords that signal useful knowledge
-            string[] rcaMarkers = { "RCA:", "Root Cause:", "Resolution:", "Fix:", "Solution:" };
+            string[] rcaMarkers = { "RCA", "Root Cause", "Resolution", "Fix", "Solution" };
 
             var results = new List<JiraTicket>();
 
             foreach (var issue in json["issues"])
             {
-               
+               // Get the raw ADF description and convert to text
+                var rawDescription = issue["fields"]?["description"];
+                var cleanDescription = DataCleaner.ConvertAdfToText(rawDescription);
+
                 var rawComments = issue["fields"]?["comment"]?["comments"]?
                       .Select(c => DataCleaner.ConvertAdfToText(c["body"]))
                       .ToList();
@@ -92,16 +97,21 @@ namespace XbrlSupportBot.Services
                 }
 
                 // Clean using the detected marker (or empty string if we fell back to length)
-                var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, detectedMarker);
+                var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, detectedMarker) ?? string.Empty;
                 var finalWorkaround = DataCleaner.CleanContentByKeyword(workaroundRaw, "Workaround:");
 
-              
-               
-                if (!string.IsNullOrEmpty(finalRca))
+                // Define a list of "Noise" keywords that indicate a ticket is useless
+                string[] noiseKeywords = { "test mail", "ignore this", "test_ticket", "finding available", "analyzing the mentioned issue" };
+                bool isNoise = noiseKeywords.Any(nk =>
+                                                    issue["fields"]?["summary"]?.ToString().Contains(nk, StringComparison.OrdinalIgnoreCase) == true ||
+                                                    finalRca?.Contains(nk, StringComparison.OrdinalIgnoreCase) == true);
+
+                if (!string.IsNullOrEmpty(finalRca) && !isNoise && finalRca.Length > 10)
                 {
                     results.Add(new JiraTicket
                     {
                         Key = issue["key"]?.ToString(),
+                        Description = cleanDescription,
                         Summary = issue["fields"]?["summary"]?.ToString(),
                         Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
                         RcaComment = finalRca ?? "No specific RCA documented",
