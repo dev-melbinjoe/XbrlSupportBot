@@ -3735,5 +3735,2411 @@ Does your current JiraService already have a way to identify which "Product" (SA
 
 
 
+Key
 
+Summary
+
+Priority
+
+RCA
+
+Workaround
+
+
+
+SWSUP-79
+
+RE: Unable to generate output.
+
+Medium
+
+Hi Aarthi, This Issue has been resolved, able to generate output now,
+
+kindly check and verify. RCA : The system encountered a "File Lock"
+
+error. This occurs when a specific file on the server is being accessed or
+
+held open by another process, preventing the application from overwriting or
+
+updating it. We identified the active process holding the file on the storage
+
+server and manually terminated it. This released the lock, allowing the
+
+Rainbow application to successfully regenerate and save the updated output.
+
+Please let us know if you encounter any further issues.
+
+No manual workaround available
+
+
+
+SWSUP-77
+
+RE: Request for Fact Count
+
+Medium
+
+Hi Nagaraj, Kindly Find the attached File for US - Rainbow Fact
+
+Count.  Thanks and
+
+No manual workaround available
+
+
+
+SWSUP-74
+
+Re: UNABLE TO GENERATE OUTPUT
+
+Medium
+
+Hi Team, Ignore this mail.
+
+No manual workaround available
+
+
+
+SWSUP-70
+
+Unable to upload HTML_ Rainbow
+
+Medium
+
+Hi Mutharasan, We are able to upload the HTML in the Rainbow application.
+
+No manual workaround available
+
+
+
+SWSUP-68
+
+Unable to Change Admin Portal Password
+
+Medium
+
+Hi Harish, Thank you so much for your swift response. It is working now,
+
+so kindly ignore the request. Roja Team lead, Service Delivery, Publishing
+
+DataTracks Global < http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +91 44 4008 9000, Ext: 203, 328
+
+support@datatracks.com< support@datatracks.com > This email and any
+
+attachments are confidential and intended only for the named recipient(s). If
+
+you are not the intended recipient, please notify the sender, delete it, and
+
+do not share or use its contents without written consent from DataTracks.
+
+No manual workaround available
+
+
+
+SWSUP-65
+
+Retail Login_ Password reset request
+
+Medium
+
+Hi Prakash, We have updated the default password for all the retail user
+
+account. Kindly check and reset to unique password using application option.
+
+Thanks &
+
+No manual workaround available
+
+
+
+SWSUP-64
+
+Retail Login_ Request_ TSR Server
+
+Medium
+
+Hi Prakash, Please note that we can use the existing retail logins and
+
+the password has been updated to default . Thanks &
+
+No manual workaround available
+
+
+
+SWSUP-63
+
+RE: Dolphin::Draft Changes_Lufax Holding Ltd_V2_XBRL_job ID_88899
+
+Medium
+
+RCA: The issue was caused by a start and end tag of the
+
+DescriptionOfAccountingPolicyForSharebasedPaymentTransactionsExplanatory
+
+element (Section Name : F43-F44). The tag has been removed, which resolved
+
+the issue.
+
+No manual workaround available
+
+
+
+SWSUP-62
+
+RE: Request validation error fixation 
+
+for entity Atlas Professionals B.V.
+
+Medium
+
+Hi Nagaraj, We are currently analysing the mentioned issue and will
+
+provide you with an update once our findings are available. Thanks,
+
+Umamaheswari M
+
+No manual workaround available
+
+
+
+SWSUP-60
+
+Rainbow 3.0_86100_Korea Electric Power Corp_Request for Workspace Copy
+
+Medium
+
+Hi Team, We have taken copy for the below mentioned workspace. Kindly
+
+check and let us know if any issues. Job: Korea Electric Power Corp New WS
+
+ID: 20-F_12_2025_33
+
+No manual workaround available
+
+
+
+SWSUP-59
+
+Dolphin |ATQC| CEF | V1 | PGIM Credit Income Fund | 150483
+
+Medium
+
+RCA: LineItems is not created under the table in presentation tree which
+
+is causing this issue RoleName : N-2 N-2 - [Capital Stock] N-2 - [Effects of
+
+Leverage] N-2 - [Investment Objectives] N-2 - [Long Term Debt] N-2 - [Other
+
+Securities] N-2 - [Outstanding Securities] N-2 - [Risk Factors] N-2 - [Senior
+
+Securities]
+
+No manual workaround available
+
+
+
+SWSUP-57
+
+RE:  ESEF_ Live job_ Lundin Gold
+
+Inc_ Junk Characters Issue
+
+Medium
+
+Hi Nagaraj, We have analyzed the issue mentioned below and observed that
+
+junk characters are retained during the PDF-to-HTML conversion using IDR.
+
+Please refer to the attached screenshot for more details. @Gautham Please
+
+check with IDR and advise us to resolve this issue. Thanks &
+
+No manual workaround available
+
+
+
+SWSUP-56
+
+KvK _ Live job _Atlas Professionals B.V_ Build Calculation issue 
+
+Medium
+
+Hi Melbin, We have verified the calculation page, and it is now working
+
+correctly. Thank you for your support.
+
+No manual workaround available
+
+
+
+SWSUP-54
+
+Rainbow server login issue [P3]
+
+Medium
+
+Hi Chinnamani, The below-mentioned user ID has been unlocked. I have
+
+checked, and the issue is now resolved. I am able to log in successfully.
+
+Thank you for your support. Publishing Barathraj S DataTracks Global
+
+www.datatracks.com +044 4008 9000 This email and any attachments are
+
+confidential and intended only for the named recipient(s). If you are not the
+
+intended recipient, please notify the sender, delete it, and do not share or
+
+use its contents without written consent from DataTracks.
+
+No manual workaround available
+
+
+
+SWSUP-47
+
+RE: Output issue
+
+Medium
+
+RCA: The issue was caused by a mismatch in the end tag order of the
+
+PvpTableTextBlock element. The correct tag order has been updated, which
+
+resolved the issue.
+
+No manual workaround available
+
+
+
+SWSUP-45
+
+RE: Dolphin: ATQC_79770_KB Financial Group Inc. (V5) - OUTPUT ISSUE
+
+-  P2
+
+Medium
+
+Hi Team, Now its working fine.
+
+No manual workaround available
+
+
+
+SWSUP-44
+
+Rainbow 3.0_Equitable Financial Life Insurance Co of America
+
+(RILA)_Unable to Generate Output
+
+Medium
+
+Hi Team, We are able to generate output . And note output was blocked due
+
+to end tag was placed inside the table. Thanks &
+
+No manual workaround available
+
+
+
+SWSUP-43
+
+RE: Unable to generate output.
+
+Medium
+
+We are now able to generate the output, and thank you for your support.
+
+Manikandan Team Lead, XBRL Services DataTracks Global <
+
+http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +91 44 4008 9000 | 221 This email and any
+
+attachments are confidential and intended only for the named recipient(s). If
+
+you are not the intended recipient, please notify the sender, delete it, and
+
+do not share or use its contents without written consent from DataTracks.
+
+No manual workaround available
+
+
+
+SWSUP-42
+
+Re: Output issue
+
+Medium
+
+RCA: The issue was caused by a mismatch in the end‑tag order of the
+
+FeeTableTextBlock element. The correct tag order has been updated, which
+
+resolved the issue.
+
+No manual workaround available
+
+
+
+SWSUP-41
+
+Unable to generate output
+
+Medium
+
+Hi Shashidhar, Kindly check the start and end Tag  for below 
+
+mentioned elements Element Name : ExpenseExampleTableTextBlock
+
+InvestmentObjectivesAndPracticesTextBlock OutstandingSecuritiesTableTextBlock
+
+RiskFactorsTableTextBlock RiskTextBlock
+
+No manual workaround available
+
+
+
+SWSUP-40
+
+Superscript Issue on VIP jobs
+
+Lowest
+
+Hi Team, We attempted to reproduce the reported issue during our testing
+
+cycle but were unable to replicate it. 
+
+To assist us in investigating further, could you kindly provide the
+
+exact scenario or steps where the issue was observed?  This will help us analyze the situation
+
+more effectively and ensure a quicker resolution. &nbsp;
+
+Workaround: Kindly wrap the respective content with
+
+&lt;span&gt;&lt;/span&gt; tags to avoid the issue. Please let
+
+us know if you need any assistance or clarification. &nbsp;
+
+
+
+SWSUP-39
+
+Rainbow 3.0_Unable to Generate Output
+
+Medium
+
+RCA:  There was unwanted Role
+
+'Uncategorized' and Elements for this Role were present in Database which was
+
+causing this error. Solution : Removed the unwanted Roles and it's elements
+
+in Database Role : Uncategorized Elements : Uncategorized
+
+UncategorizedAbstract UncategorizedTable UncategorizedAxis
+
+UncategorizedDomain
+
+No manual workaround available
+
+
+
+SWSUP-36
+
+RE: Output issue
+
+Medium
+
+RCA: An incorrect trading symbol was identified in the entity, which has
+
+been corrected by the Nagaraj (Testing team). The same update has also been
+
+applied to the section table in database. Thanks, Umamaheswari M
+
+No manual workaround available
+
+
+
+SWSUP-34
+
+KvK _ Live job _UniQure Biopharma B..V._ Build Calculation issue
+
+Medium
+
+Hi Team, Output now generated in below mentioned Job in Live server .
+
+Kindly check it and confirm. Thanks and
+
+No manual workaround available
+
+
+
+SWSUP-33
+
+KvK _ Live job _Norinchukin Bank Europe N.V._ Build Calculation issue
+
+Medium
+
+Hi Chinnamani, We confirm that the issue has been resolved now. Thank
+
+you!
+
+No manual workaround available
+
+
+
+SWSUP-30
+
+Auto Downloader Issue
+
+Medium
+
+Hi Roja, The filename was too long for the system to process; this has
+
+now been manually fixed for this file. The file will be available in the next
+
+download. Harish S Software Developer DataTracks Global <
+
+http://www.datatracks.com/ >  <
+
+http://www.datatracks.com/ > www.datatracks.com
+
+No manual workaround available
+
+
+
+SWSUP-26
+
+RE: Rainbow ESEF: Rendering Issue in Genuit Group plc
+
+Highest
+
+Hi Nagaraj, We have moved code changes for below mentioned issue to
+
+Rainbow ESEF UAT environment. Kindly verify and let us know if you
+
+encountered any issues. URL: 
+
+http://10.9.9.17:4000/  Rainbow
+
+ESEF: Rendering Issue in Genuit Group plc Thanks &
+
+No manual workaround available
+
+
+
+SWSUP-23
+
+Rainbow 3.0_JERSEY CENTRAL POWER & LIGHT CO_Unable to generate
+
+output.
+
+Medium
+
+Hi Kalangiyam, The issue has been fixed. We are able to generate output.
+
+Thanks for your prompt action. Thanks. Prakash S Team Lead- US XBRL
+
+DataTracks Global < http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +044 4008 9000 This e-mail and its
+
+attachments are confidential and solely for the intended addressee(s). Do not
+
+share or use them without TaurusQuest’s approval. If received in error,
+
+please advise sender and delete the mail.
+
+No manual workaround available
+
+
+
+SWSUP-21
+
+RE: Rainbow_ Element map Issue
+
+Medium
+
+RE: Rainbow_ Element map Issue We are unable to map the standard elements
+
+in the Tree role for all the jobs in Rainbow application 68:1800. Could you
+
+please check and resolve the issue ASAP.
+
+No manual workaround available
+
+
+
+SWSUP-20
+
+Re: DataTracks || Bumi Armada || MBRS Conversion
+
+Medium
+
+Hi Ameesha, We tested the upload using the input shared by the client
+
+from our end, and it worked successfully. Could you please ask the client to
+
+try again? If the issue persists, we recommend arranging a call with the
+
+client so we can better understand and troubleshoot the problem.
+
+No manual workaround available
+
+
+
+SWSUP-19
+
+Re: ESEF_Live Job_Questerre Energy Corporation_Markup Report Issue
+
+Medium
+
+Hi Team, The below mentioned issue has been fixed. Kindly check and
+
+confirm. Thanks &amp;
+
+No manual workaround available
+
+
+
+SWSUP-18
+
+Urgent: Link Export Issue in KVK Live Environment
+
+Medium
+
+Hi Nagaraj, It has been verified and confirmed that the schemaLocation
+
+export issue has been resolved now. Thank you!
+
+No manual workaround available
+
+
+
+SWSUP-17
+
+Rainbow ESEF: Unused Link Remove Request
+
+Medium
+
+Hi Nagaraj, The below mentioned schema link has been successfully removed
+
+in the Rainbow ESEF testing, UAT, Local Live, and Cloud  (UAT & Live )environments. Kindly check
+
+it & let us know.
+
+No manual workaround available
+
+
+
+SWSUP-16
+
+RB SA Live Issue
+
+Medium
+
+Hi Imran, The mentioned below 
+
+issue  has been resolved. Kindly
+
+check it & let us know.
+
+No manual workaround available
+
+
+
+SWSUP-15
+
+Re: RB SA
+
+Medium
+
+Hi Chinnamani, Specific workspace JOB NAME: Buffalo City Metropolitan
+
+Development Agency Work space id: 
+
+AFS_06_2024_2 Thanks &
+
+No manual workaround available
+
+
+
+SWSUP-14
+
+Re: Unable to generate output.
+
+Medium
+
+Root Cause: The end tag was incorrectly placed inside the table.  Correction: Copy the workspace, remove and
+
+re-tag the end tag for the below mentioned element  and generate the output.  Element Name
+
+:DisclosureOfTransactionsBetweenRelatedPartiesExplanatory Thanks, Dhivya S
+
+Software team.
+
+No manual workaround available
+
+
+
+SWSUP-13
+
+BATM Advanced Communications Limited (Validation Report Error)
+
+Medium
+
+++ Testing Team.
+
+No manual workaround available
+
+
+
+SWSUP-12
+
+Repeated Job Downloads in Auto Downloader Folder
+
+Medium
+
+Hi Harish, We would appreciate it if you could please provide the
+
+following information: How are open issues/bugs in the Downloader being
+
+tracked? A list of the open issues/bugs in the Downloader that are currently
+
+pending. Thanks, Rakesh T Manager, Service Delivery DataTracks Global <
+
+http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +91 44 4008 9000, Ext: 209
+
+support@datatracks.com< support@datatracks.com > This email and any
+
+attachments are confidential and intended only for the named recipient(s). If
+
+you are not the intended recipient, please notify the sender, delete it, and
+
+do not share or use its contents without written consent from DataTracks.
+
+No manual workaround available
+
+
+
+SWSUP-11
+
+Re: iXBRL SCHEMA ERROR- South Africa
+
+Medium
+
+Root Cause: The SA_GRAP taxonomy issues were previously managed through
+
+year wise. Correction: The taxonomy is now being addressed under upcoming
+
+taxonomies. Thanks, Dhivya S Software Team.
+
+No manual workaround available
+
+
+
+SWSUP-10
+
+Unable to Generate Output in Rainbow Application [P2]
+
+Medium
+
+Root Cause: The issue occurred due to the Parent ID and Child ID being
+
+the same in the database. Specifically, in the EntityDomain, the same ID was
+
+present for the element where the role was set as Cover Page, which caused
+
+the inconsistency. As of now we removed that element. Current Status: The fix
+
+has been successfully implemented in the Rainbow UAT environment. Next Steps:
+
+The fix will be applied during the next production deployment. Thanks,
+
+Umamaheswari M
+
+No manual workaround available
+
+
+
+SWSUP-6
+
+P4 - Low: Test
+
+Medium
+
+@Swaminathan Suresh Subramani  I am
+
+able to access the ticket in JIRA. However, the issue priority is being
+
+automatically set to "Medium" for all issues.
+
+No manual workaround available
+
+
+
+SWSUP-4
+
+FW: Rainbow ESEF: Output issue
+
+Medium
+
+Acknowledged issue
+
+No manual workaround available
+
+
+
+SWSUP-3
+
+FW: Rainbow ESEF: Output issue
+
+Medium
+
+Reporter (712020:313a058d-847c-4e59-8e8b-7425398d0593) does not have
+
+permission to create attachments in project SWSUP. Following attachments
+
+found in the email have been discarded: image001.png
+
+No manual workaround available
+
+
+
+SWSUP-2
+
+Test Mail
+
+Medium
+
+Test-ACK < http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +91-7550232370 | +91-44-40089000, Ext: 303
+
+it@datatracks.com This email and any attachments are confidential and
+
+intended only for the named recipient(s). If you are not the intended
+
+recipient, please notify the sender, delete it, and do not share or use its
+
+contents without written consent from DataTracks.
+
+________________________________
+
+No manual workaround available
+
+
+
+SWSUP-1
+
+Test_Ticket_24.3.2026
+
+Medium
+
+Reporter (acdea0c2-4c5f-466c-822d-0c43bdbafaec) does not have permission
+
+to create attachments in project SWSUP. Following attachments found in the
+
+email have been discarded: Outlook-3ujmmrqn.png
+
+No manual workaround available
+
+
+
+this is excel data generated from jira tickets export, even if the RCA is present it is fetching the sentences befor that also, and there are some tickets which was just a test even that are being exported, how do i handle these properly?
+
+
+Looking at your Excel data, your extraction logic is getting "polluted" by two main things: greetings/polite filler (e.g., "Hi Aarthi, This Issue has been resolved...") and system/test noise (e.g., "Test Mail," "Ignore this mail").
+
+To turn this raw dump into high-quality training data for your bot, you need to apply Rule-Based Filtering and Anchor Trimming.
+
+1. Handling the "Greeting" Noise
+Your current CleanContentByKeyword finds the keyword but keeps everything before it if it's the "longest comment." We need to enforce a stricter "Anchor" rule. If a marker like RCA: or Root Cause: is found, we should discard everything before it.
+
+Update your CleanContentByKeyword logic:
+
+C#
+public static string CleanContentByKeyword(string rawText, string keyword)
+{
+    if (string.IsNullOrWhiteSpace(rawText)) return string.Empty;
+
+    string content = rawText;
+
+    // If we have a marker, strictly start from that marker
+    if (!string.IsNullOrEmpty(keyword))
+    {
+        int markerIndex = rawText.IndexOf(keyword, StringComparison.OrdinalIgnoreCase);
+        if (markerIndex != -1)
+        {
+            // This removes the "Hi Team, we fixed it..." part
+            content = rawText.Substring(markerIndex);
+        }
+    }
+
+    // List of footers to cut off the end
+    string[] terminators = { "Regards", "From:", "Sent:", "Subject:", "Best Regards", "Thanks", "Thank you" };
+    
+    int firstTerminator = terminators
+        .Select(t => content.IndexOf(t, StringComparison.OrdinalIgnoreCase))
+        .Where(idx => idx != -1)
+        .DefaultIfEmpty(content.Length)
+        .Min();
+
+    return content.Substring(0, firstTerminator).Trim();
+}
+2. Filtering Out "Test" and "Empty" Tickets
+Tickets like SWSUP-74 ("Ignore this mail") and SWSUP-2 ("Test Mail") will confuse your bot. You should add a Quality Gate before adding a ticket to your results list.
+
+Add a filter in your FetchRcaTicketsAsync loop:
+
+C#
+// Define a list of "Noise" keywords that indicate a ticket is useless
+string[] noiseKeywords = { "test mail", "ignore this", "test_ticket", "finding available", "analyzing the mentioned issue" };
+
+bool isNoise = noiseKeywords.Any(nk => 
+    issue["fields"]?["summary"]?.ToString().Contains(nk, StringComparison.OrdinalIgnoreCase) == true ||
+    finalRca.Contains(nk, StringComparison.OrdinalIgnoreCase) == true
+);
+
+// Only add if it's NOT noise and the RCA has actual content
+if (!isNoise && finalRca.Length > 10) 
+{
+    results.Add(new JiraTicket { ... });
+}
+3. Smart Handling of "No RCA Mentioned"
+Look at SWSUP-44: It doesn't use the word "RCA," but it says "And note output was blocked due to end tag was placed inside the table."
+
+Since you are moving toward a Semantic Kernel bot, you want to capture these "Informal RCAs."
+
+Strategy: If no rcaMarkers are found, but the comment contains technical words like Database, Tag, Element, or Table, treat that comment as the RCA.
+
+4. Improving the Data for Semantic Kernel
+In your Excel, some RCAs are very specific (SWSUP-10 mentions Parent ID and Child ID).
+
+To make the bot perform better: During your export, create a TechnicalTags column.
+
+Use a simple script to scan the RCA for words like EntityDomain, PvpTableTextBlock, or File Lock.
+
+When the bot queries the Vector DB, it will use these tags to find the exact match faster.
+
+Comparison of Results:
+Ticket	Before Cleaning	After Cleaning (Bot Ready)
+SWSUP-79	Hi Aarthi, This Issue has been resolved... RCA : The system encountered a "File Lock"...	RCA : The system encountered a "File Lock" error. This occurs when... manually terminated it.
+SWSUP-74	Hi Team, Ignore this mail.	(Discarded - Noise Filter)
+SWSUP-10	Root Cause: The issue occurred due to the Parent ID...	Root Cause: The issue occurred due to the Parent ID and Child ID being the same in the database...
+How do you want to handle tickets like SWSUP-57 where they are still "Analyzing"? Currently, these show up in your export but don't provide a solution. Should we filter those out until they are "Done" with a real RCA?
+
+
+
+
+how to fetch Description in model property?
+
+To fetch the Description field from the Jira API and map it to your model, you need to target fields["description"].
+
+However, since you are using API v3, the description is returned in Atlassian Document Format (ADF)—the same JSON structure used for comments. You must pass it through your DataCleaner.ConvertAdfToText method to get readable string content.
+
+1. Update the JiraTicket Model
+Add the Description property to your class.
+
+C#
+public class JiraTicket
+{
+    public string? Key { get; set; }
+    public string? Summary { get; set; }
+    public string? Priority { get; set; }
+    public string? Description { get; set; } // New property
+    public string? RcaComment { get; set; }
+    public string? Workaround { get; set; }
+}
+2. Update the FetchRcaTicketsAsync Logic
+You need to do two things:
+
+Ensure the description field is requested in the URL.
+
+Extract and clean the description inside the loop.
+
+Step A: Update the URL
+Add description to the fields parameter in your query string.
+
+C#
+string url =
+    $"{jira["BaseUrl"]}/rest/api/3/search/jql" +
+    $"?jql={Uri.EscapeDataString(jql)}" +
+    $"&fields=summary,priority,comment,description" + // Added description here
+    $"&maxResults=100";
+Step B: Map the value in the loop
+Inside your foreach (var issue in json["issues"]) loop, extract the description using your existing utility.
+
+C#
+foreach (var issue in json["issues"])
+{
+    // 1. Get the raw ADF description and convert to text
+    var rawDescriptionAdf = issue["fields"]?["description"];
+    var cleanDescription = DataCleaner.ConvertAdfToText(rawDescriptionAdf);
+
+    // ... (your existing RCA/Workaround logic) ...
+
+    if (!string.IsNullOrEmpty(finalRca))
+    {
+        results.Add(new JiraTicket
+        {
+            Key = issue["key"]?.ToString(),
+            Summary = issue["fields"]?["summary"]?.ToString(),
+            Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+            Description = cleanDescription, // Mapping the cleaned description
+            RcaComment = finalRca,
+            Workaround = finalWorkaround ?? "No manual workaround available"
+        });
+    }
+}
+3. Why this is useful for your Bot
+By fetching the description into the model, you can now perform the Diagnostic Mapping we discussed earlier. You can run regex against ticket.Description to find the Workspace ID or Rainbow URL automatically.
+
+4. Excel Update
+Don't forget to add a column in your ExcelService to actually see this data in your export:
+
+C#
+ws.Cell(1, 5).Value = "Description";
+// ... in the loop ...
+ws.Cell(row, 5).Value = t.Description;
+Note on "Test" tickets: Now that you have the description, you can improve your filter even more. If the Description is empty or just says "test," you can automatically skip that ticket to keep your Vector DB clean.
+
+System.NullReferenceException
+
+  HResult=0x80004003
+
+  Message=Object reference not set to an instance of an object.
+
+  Source=XbrlSupportBot
+
+  StackTrace:
+
+   at XbrlSupportBot.Services.JiraService.<>c__DisplayClass3_2.<FetchRcaTicketsAsync>b__5(String nk) in D:\MELBIN JOE\JOE\DotNet\Core\XbrlSupportBot\Services\JiraService.cs:line 106
+
+
+
+
+
+in line ->
+
+
+
+ string[] noiseKeywords = { "test mail", "ignore this", "test_ticket", "finding available", "analyzing the mentioned issue" };
+
+ bool isNoise = noiseKeywords.Any(nk =>
+
+                                     issue["fields"]?["summary"]?.ToString().Contains(nk, StringComparison.OrdinalIgnoreCase) == true ||
+
+                                     finalRca.Contains(nk, StringComparison.OrdinalIgnoreCase) == true);
+
+
+
+
+
+full code ->
+
+
+
+using ClosedXML.Excel;
+
+using DocumentFormat.OpenXml.Spreadsheet;
+
+using Newtonsoft.Json.Linq;
+
+using System;
+
+using System.Net.Http.Headers;
+
+using System.Text;
+
+using XbrlSupportBot.Models;
+
+using XbrlSupportBot.Utilities;
+
+
+
+namespace XbrlSupportBot.Services
+
+{
+
+
+
+    public class JiraService : IJiraService
+
+    {
+
+        private readonly IConfiguration _config;
+
+        private readonly HttpClient _client;
+
+
+
+        public JiraService(IConfiguration config, HttpClient client)
+
+        {
+
+            _config = config;
+
+            _client = client;
+
+        }
+
+
+
+        public async Task<List<JiraTicket>> FetchRcaTicketsAsync()
+
+        {
+
+            var jira = _config.GetSection("Jira");
+
+
+
+            var auth = Convert.ToBase64String(
+
+                Encoding.ASCII.GetBytes($"{jira["Email"]}:{jira["ApiToken"]}")
+
+            );
+
+
+
+            _client.DefaultRequestHeaders.Authorization =
+
+                new AuthenticationHeaderValue("Basic", auth);
+
+
+
+
+
+            _client.DefaultRequestHeaders.Accept.Add(
+
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+
+
+
+            string jql = $"project = '{jira["ProjectKey"]}' AND status = 'Done'";
+
+            //string url = $"{jira["BaseUrl"]}/rest/api/2/search?jql={Uri.EscapeDataString(jql)}&fields=summary,priority,comment&maxResults=100";
+
+
+
+
+
+
+
+            string url =
+
+                $"{jira["BaseUrl"]}/rest/api/3/search/jql" +
+
+                $"?jql={Uri.EscapeDataString(jql)}" +
+
+                $"&fields=description,summary,priority,comment" +
+
+                $"&maxResults=100";
+
+
+
+            //url = "https://datatracks.atlassian.net/rest/api/2/search/jql?jql=project%20%3D%20%27SWSUP%27%20AND%20status%20%3D%20%27Done%27&fields=summary,priority,comment&maxResults=100";
+
+
+
+            var response = await _client.GetStringAsync(url);
+
+            var json = JObject.Parse(response);
+
+
+
+
+
+            //if (!response.IsSuccessStatusCode)
+
+            //{
+
+            //    throw new Exception($"Jira error {response.StatusCode}: {content}");
+
+            //}
+
+
+
+            // Define keywords that signal useful knowledge
+
+            string[] rcaMarkers = { "RCA", "Root Cause", "Resolution", "Fix", "Solution" };
+
+
+
+            var results = new List<JiraTicket>();
+
+
+
+            foreach (var issue in json["issues"])
+
+            {
+
+               // Get the raw ADF description and convert to text
+
+                var rawDescription = issue["fields"]?["description"];
+
+                var cleanDescription = DataCleaner.ConvertAdfToText(rawDescription);
+
+
+
+                var rawComments = issue["fields"]?["comment"]?["comments"]?
+
+                      .Select(c => DataCleaner.ConvertAdfToText(c["body"]))
+
+                      .ToList();
+
+
+
+                string rcaRaw = null;
+
+                string detectedMarker = "";
+
+
+
+               
+
+                var workaroundRaw = rawComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+
+                
+
+                //Look specifically for comments containing markers in the WHOLE list first
+
+                var commentWithMarker = rawComments?.FirstOrDefault(c =>
+
+                    rcaMarkers.Any(m => c.Contains(m, StringComparison.OrdinalIgnoreCase)));
+
+
+
+                if (commentWithMarker != null)
+
+                {
+
+                    rcaRaw = commentWithMarker;
+
+                    // Identify which marker was used so we can clean it correctly
+
+                    detectedMarker = rcaMarkers.FirstOrDefault(m =>
+
+                        rcaRaw.Contains(m, StringComparison.OrdinalIgnoreCase));
+
+                }
+
+                else if (rawComments?.Any() == true) // ONLY if no marker is found in ANY comment, fall back to the longest one
+
+                {
+
+                    rcaRaw = rawComments.OrderByDescending(c => c.Length).First();
+
+                }
+
+
+
+                // Clean using the detected marker (or empty string if we fell back to length)
+
+                var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, detectedMarker);
+
+                var finalWorkaround = DataCleaner.CleanContentByKeyword(workaroundRaw, "Workaround:");
+
+
+
+                // Define a list of "Noise" keywords that indicate a ticket is useless
+
+                string[] noiseKeywords = { "test mail", "ignore this", "test_ticket", "finding available", "analyzing the mentioned issue" };
+
+                bool isNoise = noiseKeywords.Any(nk =>
+
+                                                    issue["fields"]?["summary"]?.ToString().Contains(nk, StringComparison.OrdinalIgnoreCase) == true ||
+
+                                                    finalRca.Contains(nk, StringComparison.OrdinalIgnoreCase) == true);
+
+
+
+                if (!string.IsNullOrEmpty(finalRca) && !isNoise && finalRca.Length > 10)
+
+                {
+
+                    results.Add(new JiraTicket
+
+                    {
+
+                        Key = issue["key"]?.ToString(),
+
+                        Description = cleanDescription,
+
+                        Summary = issue["fields"]?["summary"]?.ToString(),
+
+                        Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+
+                        RcaComment = finalRca ?? "No specific RCA documented",
+
+                        Workaround = finalWorkaround ?? "No manual workaround available"
+
+                    });
+
+                }
+
+            }
+
+
+
+            return results;
+
+        }
+
+    }
+
+
+
+}
+
+The NullReferenceException is occurring because finalRca is likely null.
+
+In your code, if an issue has no comments at all, rcaRaw stays null. When you pass null into DataCleaner.CleanContentByKeyword, it returns null (or a null-valued string) into finalRca. Then, when you call finalRca.Contains(...), the application crashes because you can't run a "Contains" check on something that doesn't exist.
+
+The Fix
+You need to add a null-check (using the ? operator) to finalRca inside the isNoise logic.
+
+Update your noise filter logic to this:
+
+C#
+bool isNoise = noiseKeywords.Any(nk =>
+    (issue["fields"]?["summary"]?.ToString()?.Contains(nk, StringComparison.OrdinalIgnoreCase) == true) ||
+    (finalRca?.Contains(nk, StringComparison.OrdinalIgnoreCase) == true) // Added '?' after finalRca
+);
+Why this happened
+In C#, null.Contains("anything") results in an immediate crash. By adding the ?, you are saying: "If finalRca is null, don't even try to check for noise, just treat the whole expression as null/false."
+
+Pro-Tip for cleaner code
+To make your foreach loop more robust and avoid these "Object reference not set" errors in the future, you can ensure finalRca is never null by using the Null Coalescing Operator (??):
+
+C#
+// Change this line:
+var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, detectedMarker);
+
+// To this (Ensures it is at least an empty string, never null):
+var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, detectedMarker) ?? string.Empty;
+Summary of what caused the crash:
+A Jira ticket had no comments.
+
+rcaRaw was null.
+
+finalRca became null.
+
+finalRca.Contains(...) threw the NullReferenceException.
+
+Applying the ? or ?? as shown above will get your bot running again and allow it to skip those empty tickets safely!
+
+
+
+
+Description
+
+
+
+++@software support Best Regards, Melbin
+
+Joe Ext : 317 From: aarthi.sr@dtracks.in 
+
+aarthi.sr@dtracks.in Sent: 30 April 2026 08:25 AM To: testingteam
+
+<testingteam@dtracks.in> Cc: usxbrltl@datatracks.com; usxbrlteam@dtracks.in
+
+<usxbrlteam@dtracks.in>; softwareteam@dtracks.in Subject: Unable to
+
+generate output. Hi Team, We are currently unable to generate output in the
+
+Rainbow application for the job mentioned below: * Entity: RIVERSOURCE LIFE
+
+INSURANCE CO * WS ID: N-4_04_2026_1 * Rainbow URL:  http://10.9.9.68:1800  < https://10.9.9.68:1800/ >  Regards, Aarthi S R Reviewer, Services Delivery
+
+DataTracks Global < http://www.datatracks.com/ >  www.datatracks.com <
+
+http://www.datatracks.com/ >  This
+
+email and any attachments are confidential and intended only for the named
+
+recipient(s). If you are not the intended recipient, please notify the
+
+sender, delete it, and do not share or use its contents without written
+
+consent from DataTracks.
+
+
+
+Hi Team, Please provide the requested
+
+report in the below format. Application URL: 
+
+http://10.9.9.68:1800/ # Entity Name CIK Workspace Name Active Tag
+
+Count Active Text Block Count 1 2 3 4 Thanks and Regards, Nagaraj V From:
+
+Cheirma Sakthi P <cheirmasakthi.p@datatracks.com> Sent: Tuesday, April
+
+28, 2026 3:55 PM To: Softwareteam Dtracks <softwareteam@dtracks.in>;
+
+Nagaraj V <nagaraj@datatracks.com> Cc: Muthukumaran V
+
+<muthukumaran@datatracks.com> Subject: Request for Fact Count Hi Team,
+
+Can you help in getting the fact count for all the WS available within
+
+Rainbow.  We need to report including
+
+the entity name, cik, WS number and fact count. Thanks, Sakthi. Manager, XBRL
+
+Services DataTracks Global < http://www.datatracks.com/ >
+
+www.datatracks.com< http://www.datatracks.com/ > +044 4008 9000 This
+
+email and any attachments are confidential and intended only for the named
+
+recipient(s). If you are not the intended recipient, please notify the
+
+sender, delete it, and do not share or use its contents without written
+
+consent from DataTracks. [Created via e-mail received from: Nagaraj V
+
+<nagaraj@datatracks.com>]
+
+
+
+Hi Team, We are unable to upload the HTML
+
+to Rainbow application for all the jobs. The message says  "File uploaded successfully" but
+
+the tool gets blank. Could you please check and resolve the issue ASAP Thanks.
+
+Prakash S Team Lead- US XBRL DataTracks Global <
+
+http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +044 4008 9000 This e-mail and its
+
+attachments are confidential and solely for the intended addressee(s). Do not
+
+share or use them without TaurusQuest's approval. If received in error,
+
+please advise sender and delete the mail. [Created via e-mail received from:
+
+"Prakash S." <prakash.s@datatracks.com>]
+
+
+
+Hi Team, I am unable to change my
+
+password for the admin portal at 
+
+https://datatracks.ie/admin Username: Roja_IEPP EMP ID: 2569 Name:
+
+Cherasala Reddiroja Kindly assist in resetting my password at the earliest.
+
+Roja Team lead, Service Delivery, Publishing DataTracks Global <
+
+http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +91 44 4008 9000, Ext: 203, 328
+
+support@datatracks.com< support@datatracks.com > This email and any
+
+attachments are confidential and intended only for the named recipient(s). If
+
+you are not the intended recipient, please notify the sender, delete it, and
+
+do not share or use its contents without written consent from DataTracks.
+
+[Created via e-mail received from: Cherasala Reddi Roja
+
+<roja@datatracks.com>]
+
+
+
+Hi Team, We are currently experiencing
+
+issues with our Retail XBRL login credentials. It appears that the passwords
+
+have expired and multiple unsuccessful login attempts. Could you please check
+
+and reset it. Retailxbrl0@dtracks.in< Retailxbrl0@dtracks.in >
+
+Retailxbrl1@dtracks.in< Retailxbrl1@dtracks.in >
+
+Retailxbrl2@dtracks.in< Retailxbrl2@dtracks.in >
+
+Retailxbrl3@dtracks.in< Retailxbrl3@dtracks.in > Retailxbrl4@dtracks.in
+
+< Retailxbrl4@dtracks.in > Retailxbrl5@dtracks.in <
+
+Retailxbrl5@dtracks.in > Retailxbrl6@dtracks.in <
+
+Retailxbrl6@dtracks.in > Retailxbrl7@dtracks.in <
+
+Retailxbrl7@dtracks.in > Retailxbrl8@dtracks.in <
+
+Retailxbrl8@dtracks.in > Retailxbrl9@dtracks.in <
+
+Retailxbrl9@dtracks.in > Retailxbrl10@dtracks.in<
+
+Retailxbrl10@dtracks.in > Retailxbrl11@dtracks.in<
+
+Retailxbrl11@dtracks.in > Retailxbrl12@dtracks.in<
+
+Retailxbrl12@dtracks.in > Retailxbrl13@dtracks.in<
+
+Retailxbrl13@dtracks.in > Retailxbrl14@dtracks.in<
+
+Retailxbrl14@dtracks.in > Retailxbrl15@dtracks.in<
+
+Retailxbrl15@dtracks.in > Retailxbrl16@dtracks.in<
+
+Retailxbrl16@dtracks.in > Retailxbrl17@dtracks.in <
+
+Retailxbrl17@dtracks.in > Retailxbrl18@dtracks.in< Retailxbrl18@dtracks.in
+
+> Retailxbrl20@dtracks.in< Retailxbrl20@dtracks.in > Thanks. Prakash
+
+S Team Lead- US XBRL DataTracks Global < http://www.datatracks.com/ >
+
+www.datatracks.com< http://www.datatracks.com/ > +044 4008 9000 This
+
+e-mail and its attachments are confidential and solely for the intended
+
+addressee(s). Do not share or use them without TaurusQuest's approval. If
+
+received in error, please advise sender and delete the mail. [Created via
+
+e-mail received from: "Prakash S." <prakash.s@datatracks.com>]
+
+
+
+Hi Team, Could you please create the
+
+Rainbow retail XBRL and Edgar logins for to use the TSR server (
+
+http://10.9.9.68:3000 ) Thanks. Prakash S Team Lead- US XBRL DataTracks
+
+Global < http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +044 4008 9000 This e-mail and its
+
+attachments are confidential and solely for the intended addressee(s). Do not
+
+share or use them without TaurusQuest's approval. If received in error,
+
+please advise sender and delete the mail. [Created via e-mail received from:
+
+"Prakash S." <prakash.s@datatracks.com>]
+
+
+
+Hi Team, Please be informed that we are
+
+unable to download the output for the job mentioned below. Could you please
+
+rectify this issue as soon as possible. Thanks, Roja Team lead, Service
+
+Delivery, Publishing DataTracks Global < http://www.datatracks.com/ >
+
+www.datatracks.com< http://www.datatracks.com/ > +91 44 4008 9000, Ext:
+
+203, 328 support@datatracks.com< support@datatracks.com > This email
+
+and any attachments are confidential and intended only for the named
+
+recipient(s). If you are not the intended recipient, please notify the
+
+sender, delete it, and do not share or use its contents without written
+
+consent from DataTracks. From: Sathish Kumar K.
+
+<sathishkumar.k@datatracks.com> Sent: Thursday, April 23, 2026 3:29 AM
+
+To: Preprod@datatracks.com Cc: USXBRLTL <usxbrltl@datatracks.com>;
+
+Muthukumaran V <muthukumaran@datatracks.com>; Cheirma Sakthi P
+
+<cheirmasakthi.p@datatracks.com> Subject: Dolphin::Draft Changes_Lufax
+
+Holding Ltd_V2_XBRL_job ID_88899 Hi Team, Please process draft edits with
+
+current document. Program Dolphin Filing Type iXBRL Process Request Final
+
+Draft Process type Process Type as per previous Round Entity Lufax Holding
+
+Ltd WS ID 20-F_12_2025_6 Job id 88899 Other Comments Preproduction ETA 04/23/26
+
+10:00 AM IST Thanks, Sathish.K Team Lead, XBRL Services DataTracks Global
+
+< http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +044 4008 9000 This email and any attachments
+
+are confidential and intended only for the named recipient(s). If you are not
+
+the intended recipient, please notify the sender, delete it, and do not share
+
+or use its contents without written consent from DataTracks. [Created via
+
+e-mail received from: "Preprod@datatracks.com" <preprod@datatracks.com>]
+
+
+
+Hi Ram, Kindly investigate and let us
+
+know the reason for this issue? Thanks and Regards, Nagaraj V From: Kader
+
+Hussain <kader.s@datatracks.com> Sent: Wednesday, April 22, 2026 2:06
+
+PM To: rohini.k@dtracks.in Cc: Sathish Kumar V <sathishkumar.v@datatracks.com>;
+
+DhanapalRajendhiran <dhanapal.r@dtracks.in>; Testing Team
+
+<testingteam@dtracks.in>; Shaisman Sridhar
+
+<shaisman.s@datatracks.com>; Nagaraj V <nagaraj@datatracks.com>;
+
+Muthukumaran V <muthukumaran@datatracks.com> Subject: RE: Request
+
+validation error fixation for entity Atlas Professionals B.V. Hi Rohini, May
+
+I know the reason for doing this backend? As I was advised, this kind of
+
+issue has already been handled in the application. Thank you! Best Regards, Kader
+
+Hussain XBRL-Service Delivery From: rohini.k@dtracks.in<
+
+rohini.k@dtracks.in > <rohini.k@dtracks.in< rohini.k@dtracks.in
+
+>> Sent: 22-Apr-2026 12:20 PM To: Shaisman Sridhar
+
+<shaisman.s@datatracks.com< shaisman.s@datatracks.com >> Cc:
+
+Kader Hussain <kader.s@datatracks.com< kader.s@datatracks.com >>;
+
+Sathish Kumar V <sathishkumar.v@datatracks.com<
+
+sathishkumar.v@datatracks.com >>; DhanapalRajendhiran
+
+<dhanapal.r@dtracks.in< dhanapal.r@dtracks.in >>; Testing Team
+
+<testingteam@dtracks.in< testingteam@dtracks.in >> Subject: Re:
+
+Request validation error fixation for entity Atlas Professionals B.V. Hi
+
+Team, The issue mentioned below has been fixed in the backend and located at the
+
+specified path. PATH:
+
+\\preprodfs\XBRL-KVK\02<file://preprodfs/XBRL-KVK/02> Live Files\02
+
+Retail\Atlas Professionals B.V\Annual
+
+Report_31Dec2025\V1_Set-up_20Apr2026\04-QC\03-QC Pending\Dhanapal
+
+Qc\V3\Backend Thanks & Regards, Rohini Testing team. From:
+
+shaisman.s@datatracks.com< shaisman.s@datatracks.com > Sent: Wed, 22
+
+Apr 2026 01:05:13 To: Testing Team <testingteam@dtracks.in<
+
+testingteam@dtracks.in >> Cc: Kader Hussain
+
+<kader.s@datatracks.com< kader.s@datatracks.com >>, Sathish Kumar
+
+V <sathishkumar.v@datatracks.com< sathishkumar.v@datatracks.com
+
+>>, DhanapalRajendhiran <dhanapal.r@dtracks.in<
+
+dhanapal.r@dtracks.in >> Subject: Request validation error fixation for
+
+entity Atlas Professionals B.V. Hi Team We are facing a validation error
+
+regarding a missing role reference for the entity mentioned below. Kindly fix
+
+the issues ASAP. Entity: Atlas Professionals B.V. WS: Annual report_12_2025_2
+
+Login: 
+
+http://10.9.9.135:3000/Workspace/Exhibits Output location
+
+:\\preprodfs\XBRL-KVK\02 Live Files\02 Retail\Atlas Professionals B.V\Annual
+
+Report_31Dec2025\V1_Set-up_20Apr2026\04-QC\03-QC Pending\Dhanapal Qc\V3
+
+Regards, Shaisman Sridhar Team Lead - EU & IN Service Delivery DataTracks
+
+Global < http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +91 44 4008 9000, Ext: 215
+
+shaisman.s@datatracks.com< shaisman.s@datatracks.com > This email and
+
+any attachments are confidential and intended only for the named
+
+recipient(s). If you are not the intended recipient, please notify the
+
+sender, delete it, and do not share or use its contents without written
+
+consent from DataTracks. [Created via e-mail received from: Nagaraj V
+
+<nagaraj@datatracks.com>]
+
+
+
+Hi Team, Kindly take a workspace copy for
+
+the below mentioned job from the DB. If we take workspace copy normally, we
+
+are facing drop tag issue. Kindly check. Job: Korea Electric Power Corp Job
+
+ID: 86100 WS ID: 20-F_12_2025_30 Regards, Dineshkumar Annamalai SME - US XBRL
+
+SD DataTracks Global < http://www.datatracks.com/ >
+
+www.datatracks.com< http://www.datatracks.com/ > +91 44 2254 1812 | 217
+
+This email and any attachments are confidential and intended only for the
+
+named recipient(s). If you are not the intended recipient, please notify the
+
+sender, delete it, and do not share or use its contents without written
+
+consent from DataTracks. [Created via e-mail received from: Dineshkumar
+
+Annamalai <dineshkumar.a@datatracks.com>]
+
+
+
+Hi Team, Please be informed that we are
+
+unable to download the output for the job mentioned below. Could you please
+
+rectify this issue as soon as possible. Kindly note: that the ETA for this
+
+job was 6:47 AM. We would be grateful for your prompt assistance in resolving
+
+this. Regards, Support Team DataTracks Global < http://www.datatracks.com/
+
+> www.datatracks.com< http://www.datatracks.com/ > +1 (201).882.6062
+
+support@datatracks.com< support@datatracks.com > This email and any
+
+attachments are confidential and intended only for the named recipient(s). If
+
+you are not the intended recipient, please notify the sender, delete it, and
+
+do not share or use its contents without written consent from DataTracks.
+
+From: prakash.sudhakar@dtracks.in <prakash.sudhakar@dtracks.in> Sent:
+
+Wednesday, April 22, 2026 5:04 AM To: Preprod@datatracks.com Cc: USXBRLTL
+
+<usxbrltl@datatracks.com>; usxbrlteam <usxbrlteam@dtracks.in>
+
+Subject: Dolphin |ATQC| CEF | V1 | PGIM Credit Income Fund | 150483 Hi Team,
+
+Kindly process the ATQC for the below entity in the mentioned workspace and
+
+attached input. Program Dolphin – CEF Filing Type iXBRL Process Request ATQC
+
+Process type GCM-Merge Entity PGIM Credit Income Fund WS ID N-2_04_2026_4 Job
+
+id 150483 Other Comments URL: 
+
+http://10.9.9.68:1800/ Preproduction ETA 04-22-26 6:47 AM Regards,
+
+Prakash S < http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > prakash.sudhakar@dtracks.in<
+
+prakash.sudhakar@dtracks.in > +91 44 4008 9000, Ext: 207 This email and
+
+any attachments are confidential and intended only for the named
+
+recipient(s). If you are not the intended recipient, please notify the
+
+sender, delete it, and do not share or use its contents without written
+
+consent from DataTracks. [Created via e-mail received from:
+
+"Preprod@datatracks.com" <preprod@datatracks.com>]
+
+
+
+Hi Ram, Please check and address the
+
+below junk character issue. Screenshot: Input location:
+
+\\10.9.9.161\Rainbow-Common\ESEF\Live Issues\Junk Characters Thanks and
+
+Regards, Nagaraj V From: sriram.s@dtracks.in <sriram.s@dtracks.in>
+
+Sent: Tuesday, April 21, 2026 12:43 AM To: Testing Team
+
+<testingteam@dtracks.in> Cc: Kader Hussain
+
+<kader.s@datatracks.com>; Shaisman Sridhar
+
+<shaisman.s@datatracks.com>; Sathish Kumar V
+
+<sathishkumar.v@datatracks.com>; euxbrlteam <euxbrlteam@dtracks.in>;
+
+DhanapalRajendhiran <dhanapal.r@dtracks.in> Subject: ESEF_ Live job_
+
+Lundin Gold Inc_ Junk Characters Issue Hi Team, During the execution of TRAT
+
+(Table Rendering as Table), we observed that junk characters are being
+
+rendered in the table for all pages. However, the input data does not contain
+
+any such characters. We have attached a screenshot for your reference. Please
+
+fix issue ASAP Entity Name: Lundin Gold Inc. Login: xxx.2@dtracks.in<
+
+xxx.2@dtracks.in > URL : 
+
+http://10.9.9.135:5000/ Input Path :
+
+\\10.9.9.161\esef_xbrl\02<file://10.9.9.161/esef_xbrl/02> ESEF Live\01
+
+Toppan Merrill\Lundin Gold\Annual Report_31Dec2025\V2_First
+
+Draft_20Apr2026\01-Input Regards, Sriram S ESEF XBRL Team [Created via e-mail
+
+received from: Nagaraj V <nagaraj@datatracks.com>]
+
+
+
+Hi Team, We are unable to build the
+
+calculation for the below mentioned entity. Kindly look into the issue and
+
+fix asap. Entity name : Atlas Professionals B.V WS: Annual report_12_2025_1
+
+URL :  http://10.9.9.135:3000/ Best
+
+Regards Gousalya K XBRL EU [Created via e-mail received from: Gousalya K
+
+<gousalya.k@dtracks.in>]
+
+
+
+Dear Support Team, I am currently unable
+
+to log in to the Rainbow server (10.9.9.68:1800). This issue appears to be
+
+affecting only my account. When attempting to log in, the system shows an
+
+&#39;invalid credentials&#39; error. I have already reset my
+
+password, but the same error persists. User ID : barathraj.s.1@dtracks.in
+
+Please investigate this login issue and advise on the next steps at the
+
+earliest convenience. Thank you for your assistance. &nbsp; Publishing
+
+Barathraj S DataTracks Global www.datatracks.com +044 4008 9000 This email
+
+and any attachments are confidential and intended only for the named
+
+recipient(s). If you are not the intended recipient, please notify the
+
+sender, delete it, and do not share or use its contents without written
+
+consent from DataTracks. [Created via e-mail received from: Barathraj S
+
+<barathraj.s@dtracks.in>]
+
+
+
+Software Team, Please check and address
+
+the below output generate failure issue. Thanks and Regards, Nagaraj V From:
+
+tharun.m@dtracks.in <tharun.m@dtracks.in> Sent: Friday, April 17, 2026
+
+9:02 AM To: Testing Team <testingteam@dtracks.in> Cc: USXBRLTL
+
+<usxbrltl@datatracks.com>; usxbrlteam <usxbrlteam@dtracks.in>;
+
+Cheirma Sakthi P <cheirmasakthi.p@datatracks.com> Subject: Output issue
+
+Hi Team, Unable to generate Output . Kindly fix this issue ASAP. Entity Name
+
+:Shift4 Payments, Inc. Job ID :  34878
+
+Work Space ID :  PRE 14A_12_2025_9 URL
+
+: 10.9.9.68:1800< http://10.9.9.68:1800 > Thank you! Regards, M. Tharun
+
+Charri DataTracks Global < http://www.datatracks.com/ >
+
+www.datatracks.com< http://www.datatracks.com/ > +91 44 2254 1812 | 217
+
+This email and any attachments are confidential and intended only for the
+
+named recipient(s). If you are not the intended recipient, please notify the sender,
+
+delete it, and do not share or use its contents without written consent from
+
+DataTracks. [Created via e-mail received from: Nagaraj V
+
+<nagaraj@datatracks.com>]
+
+
+
+++ Softwareteam Regards, Preproduction
+
+DataTracks Global < http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +1 (201).882.6062 preprod@datatracks.com<
+
+preprod@datatracks.com > This email and any attachments are confidential
+
+and intended only for the named recipient(s). If you are not the intended
+
+recipient, please notify the sender, delete it, and do not share or use its
+
+contents without written consent from DataTracks. From:
+
+Preprod@datatracks.com <preprod@datatracks.com> Sent: Thursday, April
+
+16, 2026 7:27 PM To: Testing Team <testingteam@dtracks.in>;
+
+'kumaresan.v@dtracks.in' <kumaresan.v@dtracks.in>;
+
+'sudhakar.p@dtracks.in' <sudhakar.p@dtracks.in>; Nagaraj V
+
+<nagaraj@datatracks.com> Cc: usxbrlteam <usxbrlteam@dtracks.in>;
+
+USXBRLTL <usxbrltl@datatracks.com>; Preprod@datatracks.com Subject: RE:
+
+Dolphin: ATQC_79770_KB Financial Group Inc. (V5) Hi Team, Here is the another
+
+facing same output issue. We are unable to take output for below mentioned
+
+job. Its show “please contact administrator”. Client ETA is 9:00 PM IST
+
+today. Regards, Preproduction DataTracks Global <
+
+http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +1 (201).882.6062 preprod@datatracks.com<
+
+preprod@datatracks.com > This email and any attachments are confidential
+
+and intended only for the named recipient(s). If you are not the intended
+
+recipient, please notify the sender, delete it, and do not share or use its
+
+contents without written consent from DataTracks. From:
+
+kumaresan.v@dtracks.in< kumaresan.v@dtracks.in >
+
+<kumaresan.v@dtracks.in< kumaresan.v@dtracks.in >> Sent:
+
+Thursday, April 16, 2026 6:55 PM To: Preprod@datatracks.com< Preprod@datatracks.com
+
+> Cc: usxbrlteam <usxbrlteam@dtracks.in< usxbrlteam@dtracks.in
+
+>>; USXBRLTL <usxbrltl@datatracks.com< usxbrltl@datatracks.com
+
+>> Subject: Dolphin: ATQC_79770_KB Financial Group Inc. (V5) Hi Team,
+
+Kindly process the ATQC for the below entity in the mentioned workspace and
+
+attached input. Program Dolphin – Corporate Filing Type iXBRL Process Request
+
+ATQC Process type GCM-Merge Entity KB Financial Group Inc. WS ID
+
+20-F_12_2025_15 Job id 79770 Other Comments NA Preproduction ETA 16/04/2026
+
+9.00PM Regards, Kumaresan.V Senior Reviewer – US XBRL SD DataTracks Global
+
+< http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +91 44 2254 1812 | 217 This email and any
+
+attachments are confidential and intended only for the named recipient(s). If
+
+you are not the intended recipient, please notify the sender, delete it, and
+
+do not share or use its contents without written consent from DataTracks.
+
+[Created via e-mail received from: "Preprod@datatracks.com"
+
+<preprod@datatracks.com>]
+
+
+
+Hi Team, We are not able to generate
+
+output for the below entity. Equitable Financial Life Insurance Co of America
+
+(RILA) WS : N-4_05_2026_80 Sakthi Manager, XBRL Services DataTracks Global
+
+< http://www.datatracks.com/ > www.datatracks.com< http://www.datatracks.com/
+
+> +044 4008 9000 This email and any attachments are confidential and
+
+intended only for the named recipient(s). If you are not the intended
+
+recipient, please notify the sender, delete it, and do not share or use its
+
+contents without written consent from DataTracks.
+
+
+
+Added: Software Team Job ID: 85738
+
+Manikandan Team Lead, XBRL Services DataTracks Global <
+
+http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +91 44 4008 9000 | 221 This email and any
+
+attachments are confidential and intended only for the named recipient(s). If
+
+you are not the intended recipient, please notify the sender, delete it, and
+
+do not share or use its contents without written consent from DataTracks.
+
+From: malleswarai.p@dtracks.in <malleswarai.p@dtracks.in> Sent:
+
+Wednesday, April 15, 2026 10:39 PM To: Testing Team
+
+<testingteam@dtracks.in> Cc: USXBRLTL <usxbrltl@datatracks.com>;
+
+usxbrlteam <usxbrlteam@dtracks.in>; Cheirma Sakthi P
+
+<cheirmasakthi.p@datatracks.com> Subject: Unable to generate output. Hi
+
+Team, We are currently unable to generate output in the Rainbow application
+
+for the job mentioned below:  
+
+Entity:  Equitable Financial
+
+Life Insurance Co (RILA)   WS ID:
+
+N-4_05_2026_70   Rainbow URL: 
+
+http://10.9.9.68:1800<https://10.9.9.68:1800/ > Thanks &
+
+Regards, D.Malleswari 2509, Analyst. [Created via e-mail received from:
+
+Manikandan P <manikandan.p@datatracks.com>]
+
+
+
+Team, Please check the below mentioned
+
+issue Thanks & Regards, Mohamed Imran F Team Lead, Product Testing
+
+DataTracks Global www.datatracks.com< http://www.datatracks.com/ >
+
++91.(44).22541812  Ext:333 testingteam@dtracks.in
+
+This e-mail and its attachments are confidential and solely for the intended
+
+addressee(s). Do not share or use them without TaurusQuest’s approval. If
+
+received in error, please advise sender and delete the mail.
+
+________________________________ From: vignesh.sn@dtracks.in
+
+<vignesh.sn@dtracks.in> on behalf of Vignesh S N
+
+<vignesh.sn@dtracks.in> Sent: Tuesday, April 14, 2026 4:08 PM To:
+
+Testing Team <testingteam@dtracks.in> Cc: USXBRLTL
+
+<usxbrltl@datatracks.com>; usxbrlteam <usxbrlteam@dtracks.in>;
+
+Cheirma Sakthi P <cheirmasakthi.p@datatracks.com> Subject: Output issue
+
+Hi Team, Unable to generate Output . Kindly fix this issue ASAP. Entity Name
+
+:Separate Account No. 49B Job ID : 67047 Work Space ID :  N-4_05_2026_50 URL : 10.9.9.68:1800 Thank
+
+you! Regards, Vignesh S N DataTracks Global < http://www.datatracks.com/
+
+> www.datatracks.com< http://www.datatracks.com/ > +91 44 2254 1812
+
+| 217 This email and any attachments are confidential and intended only for
+
+the named recipient(s). If you are not the intended recipient, please notify
+
+the sender, delete it, and do not share or use its contents without written
+
+consent from DataTracks.
+
+
+
+Hi Team, Unable to&nbsp; Generate
+
+Output for below file. &nbsp;Please check issue and fix it.
+
+Entity:&nbsp;Manulife Private Credit Plus Fund Job ID :&nbsp;212123
+
+WS ID:&nbsp;&nbsp;Job ID&nbsp;: N-2_04_2026_1 Rainbow URL: &nbsp;
+
+http://10.9.9.68:1800/ Thanks &amp; Regards, Shashidhar Kotagiri (2326).
+
+[Created via e-mail received from: Shashidhar Kotagiri
+
+<shashidhar.k@dtracks.in>]
+
+
+
+Hi Team, Job name: 845591_Separate
+
+Account A WS ID: N-4_05_2026_32 URL: 
+
+http://10.9.9.68:1800 Sec no. for sample: Sec20021 We are currently
+
+facing an issue while applying superscript to the footnote reference causing
+
+nearby content also appear as superscript. However, the formatting renders
+
+correctly in the CCL. Please find the attached email for your reference.
+
+Kindly look into this issue and resolve it at the earliest. CCL: iXBRL
+
+Output: Kindly note that we currently have seven jobs in hand with today's
+
+due date. We request your support in addressing this on priority. S. No
+
+Program Group Job Id. Company Name Format Pages Preproduction Due IST 1
+
+Dolphin VIP 84946 SEPARATE ACCOUNT A AT QC 142 14/Apr/26 03:30 AM IST 2
+
+Dolphin VIP 14075 SEPARATE ACCOUNT A AT QC 161 14/Apr/26 03:30 AM IST 3
+
+Dolphin VIP 39160 VARIABLE ACCOUNT AA AT QC 161 14/Apr/26 03:30 AM IST 4
+
+Dolphin VIP 845591 Separate Account A AT QC 267 14/Apr/26 10:00 AM IST 5
+
+Dolphin VIP 927565 VARIABLE ACCOUNT AA AT QC 267 14/Apr/26 10:00 AM IST 6
+
+Dolphin VIP 945375 VARIABLE ACCOUNT AA AT QC 157 14/Apr/26 10:00 AM IST 7
+
+Dolphin VIP 81979 VARIABLE ACCOUNT AA AT QC 240 14/Apr/26 10:00 AM IST
+
+Thanks, Vinoth Kumar J Team Lead, Publishing DataTracks Global <
+
+http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +91 44 4008 9000, Ext: 203
+
+preprod@datatracks.com< preprod@datatracks.com > This email and any
+
+attachments are confidential and intended only for the named recipient(s). If
+
+you are not the intended recipient, please notify the sender, delete it, and
+
+do not share or use its contents without written consent from DataTracks.
+
+[Created via e-mail received from: "Vinoth Kumar Martin Joseph."
+
+<vinothkumar.j@datatracks.com>]
+
+
+
+Hi Team, We are getting the below error
+
+while trying to generate the output for VIP job. URL : 10.9.9.68:1800 Entity
+
+Name : Equitable Financial Life Insurance Co of America (RILA) Workspace :
+
+N-4_05_2026_5 Sakthi Manager, XBRL Services DataTracks Global <
+
+http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +044 4008 9000 This email and any attachments
+
+are confidential and intended only for the named recipient(s). If you are not
+
+the intended recipient, please notify the sender, delete it, and do not share
+
+or use its contents without written consent from DataTracks.
+
+
+
+Hi Team, Please check and address the
+
+below mentioned output generate failure issue. URL:  http://10.9.9.68:1800/ Entity Name:
+
+Cyclerion Therapeutics WS ID: S-4_04_2026_1 WS ID: S-4_04_2026_2 Thanks &
+
+Regards, Nagaraj Velmurugan From: Preprod@datatracks.com
+
+<preprod@datatracks.com> Sent: Saturday, April 11, 2026 4:46 PM To:
+
+Preprod@datatracks.com; Testing Team <testingteam@dtracks.in>;
+
+'nagaraj.velmurugan' <nagaraj.velmurugan@dtracks.in> Cc: Preprod@datatracks.com
+
+Subject: Output issue Hi Team, We have created the job twice, but we were
+
+unable to generate the output. Kindly look into the issue and resolve it at
+
+the earliest. Program Dolphin Filing Type iXBRL Process Request Fresh
+
+Conversion Process type GCM Merge: Yes Entity Cyclerion Therapeutics, Inc.
+
+CIK CIK: 0001755237 WS ID Form Type and Period Date: Form S-4 04/10/2026
+
+Taxonomy Year: GAAP 2025 Job id 111069 Other Comments PP ETA 11 April 3:00 PM
+
+IST Regards, Preproduction DataTracks Global < http://www.datatracks.com/
+
+> www.datatracks.com< http://www.datatracks.com/ > +91 44 4008 9000,
+
+Ext: 203, 328 preprod@datatracks.com< preprod@datatracks.com > This
+
+email and any attachments are confidential and intended only for the named
+
+recipient(s). If you are not the intended recipient, please notify the
+
+sender, delete it, and do not share or use its contents without written
+
+consent from DataTracks. [Created via e-mail received from: Nagaraj V
+
+<nagaraj@datatracks.com>]
+
+
+
+Hi Team, We are unable to build the
+
+calculation for the below mentioned entity. Kindly look into the issue and
+
+fix asap. Entity name : UniQure Biopharma B.V WS: Annual report_12_2025_2 URL
+
+:  http://10.9.9.135:3000/ Best Regards
+
+Gousalya K XBRL EU [Created via e-mail received from: Gousalya K
+
+<gousalya.k@dtracks.in>]
+
+
+
+Hi Team, We are unable to build the
+
+calculation for the below mentioned entity. Kindly look into the issue and
+
+fix asap. Entity name : Norinchukin Bank Europe N.V. WS: Annual
+
+report_12_2025_1 URL : 
+
+http://10.9.9.135:3000/ Thank you! Regards, Dhanapal R EU & IN
+
+Service Delivery DataTracks Global < http://www.datatracks.com/ >  < http://www.datatracks.com/ >
+
+www.datatracks.com +91 44 4008 9000, Ext: 215 < dhanapal.r@dtracks.in >
+
+dhanapal.r@dtracks.in This email and any attachments are confidential and
+
+intended only for the named recipient(s). If you are not the intended
+
+recipient, please notify the sender, delete it, and do not share or use its
+
+contents without written consent from DataTracks. [Created via e-mail
+
+received from: Dhanapal <dhanapal.r@dtracks.in>]
+
+
+
+Hi Team, Please be informed that the job
+
+listed below is repeatedly downloading into the Auto Downloader folder. The
+
+job has been downloaded twice, but in both instances, the folder was empty
+
+with no input inside. Could you please look into this and resolve the issue?
+
+Thank you for your support. Regards, Support Team DataTracks Global <
+
+http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +1 (201).882.6062 support@datatracks.com<
+
+support@datatracks.com > This email and any attachments are confidential
+
+and intended only for the named recipient(s). If you are not the intended
+
+recipient, please notify the sender, delete it, and do not share or use its
+
+contents without written consent from DataTracks. [Created via e-mail
+
+received from: Cherasala Reddi Roja <roja@datatracks.com>]
+
+
+
+Hi Arul, Kindly review and urgently
+
+resolve the issue mentioned below. The order of the bracket ")" has
+
+been altered in the application after we used the content reordering feature.
+
+Thanks & Regards, Nagaraj Velmurugan From: mythili.a@dtracks.in
+
+<mythili.a@dtracks.in> Sent: Wednesday, April 8, 2026 8:23 AM To:
+
+Testing Team <testingteam@dtracks.in> Cc: Kader Hussain
+
+<kader.s@datatracks.com>; Shaisman Sridhar
+
+<shaisman.s@datatracks.com>; Sathishkumar V <sathishkumar.v@dtracks.in>;
+
+DhanapalRajendhiran <dhanapal.r@dtracks.in>; euxbrlteam
+
+<euxbrlteam@dtracks.in> Subject: Rendering Issue in Genuit Group plc Hi
+
+Team, We are facing an issue in the input doc which is uploaded in the
+
+application 
+
+http://10.9.9.135:5000/  for
+
+Genuit Group plc, where the bracket ) is rendering incorrectly. However, it
+
+displays correctly in the input field. This is a rush job, and I have attached
+
+a screenshot for your reference. Input Path:
+
+\\preprodfs\ESEF_XBRL\02<file://preprodfs/ESEF_XBRL/02> ESEF Live\01
+
+Toppan Merrill\Genuit Group PLC\Annual Report_31Dec2025\V2_First
+
+Draft_07Apr2026\01-Input Entity Name: Genuit Group plc Login:
+
+xxx.2@dtracks.in< xxx.2@dtracks.in > With regards Mythili A XBRL EU
+
+[Created via e-mail received from: Nagaraj V <nagaraj@datatracks.com>]
+
+
+
+Hi Team, We are currently unable to
+
+generate output in the Rainbow application for the job mentioned below:   Entity: JERSEY CENTRAL POWER & LIGHT
+
+CO   WS ID:  S-4_12_2025_8   Rainbow URL: 
+
+http://10.9.9.68:1800<https://10.9.9.68:1800/ > Regards,
+
+Dineshkumar Annamalai SME – US XBRL SD DataTracks Global <
+
+http://www.datatracks.com/ > www.datatracks.com<
+
+http://www.datatracks.com/ > +91 44 2254 1812 | 217 This email and any
+
+attachments are confidential and intended only for the named recipient(s). If
+
+you are not the intended recipient, please notify the sender, delete it, and
+
+do not share or use its contents without written consent from DataTracks.
+
+[Created via e-mail received from: Dineshkumar Annamalai
+
+<dineshkumar.a@datatracks.com>]
+
+
+
+We are unable to map the standard
+
+elements in the Tree role for all the jobs in Rainbow application 68:1800.
+
+Could you please check and resolve the issue ASAP.
+
+
+
++++ software Thanks & Regards,
+
+Mohamed Imran F Team Lead, Product Testing DataTracks Global
+
+www.datatracks.com< http://www.datatracks.com/ > +91.(44).22541812  Ext:333 testingteam@dtracks.in This e-mail
+
+and its attachments are confidential and solely for the intended
+
+addressee(s). Do not share or use them without TaurusQuest’s approval. If
+
+received in error, please advise sender and d
+
+To improve your bot's performance, we can extract the specific Product, Environment, Entity, and Workspace ID directly from these long descriptions. This allows the bot to perform a "Lookup" against your mapping table before it even starts searching the Vector DB.
+
+1. The Strategy: Structured Extraction
+Since your descriptions are essentially email chains, they follow predictable patterns. We can use Regex (Regular Expressions) to pull the "Context" out of the noise.
+
+The Logic Flow:
+
+URL Extraction: Find the IP/Port (e.g., 10.9.9.68:1800).
+
+Environment Mapping: Compare that URL against your provided list to identify if it's "Rainbow Live" or "ESEF UAT".
+
+Entity/WS Identification: Pull the specific job details to allow the bot to query the live database for that specific workspace.
+
+2. Implementation: Enhanced Data Extraction
+Add these methods to your DataCleaner utility to turn the messy text you provided into structured data.
+
+C#
+public static (string Entity, string WsId, string Url) ExtractJobDetails(string description)
+{
+    // Regex patterns for your specific email formats
+    var entityMatch = Regex.Match(description, @"Entity:\s*([^\r\n*]+)", RegexOptions.IgnoreCase);
+    var wsIdMatch = Regex.Match(description, @"WS ID:\s*([^\r\n*]+)", RegexOptions.IgnoreCase);
+    var urlMatch = Regex.Match(description, @"http://10\.\d+\.\d+\.\d+:\d+", RegexOptions.IgnoreCase);
+
+    return (
+        entityMatch.Success ? entityMatch.Groups[1].Value.Trim() : "Unknown",
+        wsIdMatch.Success ? wsIdMatch.Groups[1].Value.Trim() : "Unknown",
+        urlMatch.Success ? urlMatch.Value.Trim() : "Unknown"
+    );
+}
+3. Integrating with your JiraService
+In your main loop, call this extraction method. This allows you to tag the ticket with the correct Database and Product based on the tables you shared earlier.
+
+C#
+foreach (var issue in json["issues"])
+{
+    var rawDescription = DataCleaner.ConvertAdfToText(issue["fields"]?["description"]);
+    var details = DataCleaner.ExtractJobDetails(rawDescription);
+    
+    // logic to map details.Url to DB Name (e.g., if Url contains :1800, Db = "Rainbow3_Prod_2")
+    string dbContext = MapUrlToDb(details.Url); 
+
+    results.Add(new JiraTicket
+    {
+        Key = issue["key"]?.ToString(),
+        Description = rawDescription,
+        EntityName = details.Entity,
+        WorkspaceId = details.WsId,
+        DatabaseName = dbContext,
+        // ... rest of mapping
+    });
+}
+4. Why this makes the Bot better
+By using the Description, the bot now understands the Hierarchy of the Issue.
+hierarchical data structure, AI generated
+Getty Images
+Explore
+
+Feature	Without Description Extraction	With Description Extraction
+Search Accuracy	Searches for "Output Issue" (Too broad).	Searches for "Output Issue" + "Rainbow3_Prod_2".
+Live Diagnostics	Bot can only suggest past fixes.	Bot can use the WorkspaceId to check the EntityDomain table in the live DB.
+Automatic Routing	Human must tell the bot which server.	Bot sees 10.9.9.68:1800 and knows it is the Rainbow Live environment.
+5. Cleaning the "Noise"
+In the descriptions you provided, there is a lot of "Created via e-mail received from..." or disclaimer text.
+
+Refined Cleaning Rule:
+When saving to the Vector DB, truncate the description after the first occurrence of "Regards," or "This email and any attachments...". This prevents the AI from getting confused by the names of the people in the email thread and keeps the focus on the Technical Problem.
+
+Would you like me to help you write the MapUrlToDb helper method using the Product/Environment table you provided earlier?
 
