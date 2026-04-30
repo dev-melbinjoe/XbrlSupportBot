@@ -1,13 +1,15 @@
-﻿namespace XbrlSupportBot.Services
+﻿
+
+namespace XbrlSupportBot.Services
 {
-   public static class Constant
-    {
-        public const string JiraUrl = "https://your-domain.atlassian.net";
-        public const string Email = "your-email@example.com";
-        public const string ApiToken = "YOUR_TOKEN";
-        public const string ProjectKey = "PROJ"; 
-        public const string ExcelPath = "JiraRcaExport.xlsx";
-    }
+   //public static class Constant
+   // {
+   //     public const string JiraUrl = "https://your-domain.atlassian.net";
+   //     public const string Email = "your-email@example.com";
+   //     public const string ApiToken = "YOUR_TOKEN";
+   //     public const string ProjectKey = "PROJ"; 
+   //     public const string ExcelPath = "JiraRcaExport.xlsx";
+   // }
 
     public class JiraTicket
     {

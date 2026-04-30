@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using ClosedXML.Excel;
 using XbrlSupportBot.Models;
+using XbrlSupportBot.Utilities;
 
 namespace XbrlSupportBot.Services
 {
@@ -56,39 +57,55 @@ namespace XbrlSupportBot.Services
             //    throw new Exception($"Jira error {response.StatusCode}: {content}");
             //}
 
+            // Define keywords that signal useful knowledge
+            string[] rcaMarkers = { "RCA:", "Root Cause:", "Resolution:", "Fix:", "Solution:" };
 
             var results = new List<JiraTicket>();
 
             foreach (var issue in json["issues"])
             {
-                //var comments = issue["fields"]?["comment"]?["comments"];
+               
+                var rawComments = issue["fields"]?["comment"]?["comments"]?
+                      .Select(c => DataCleaner.ConvertAdfToText(c["body"]))
+                      .ToList();
 
-                var allComments = issue["fields"]?["comment"]?["comments"]?.Select(c => c["body"]?.ToString()).ToList();
+                string rcaRaw = null;
+                string detectedMarker = "";
 
-                // Identify a Workaround (often mentioned by Testing/Support)
-                var workaround = allComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+               
+                var workaroundRaw = rawComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+                
+                //Look specifically for comments containing markers in the WHOLE list first
+                var commentWithMarker = rawComments?.FirstOrDefault(c =>
+                    rcaMarkers.Any(m => c.Contains(m, StringComparison.OrdinalIgnoreCase)));
 
-                // Identify the RCA
-                var rca = allComments?.FirstOrDefault(c => c.Contains("RCA:", StringComparison.OrdinalIgnoreCase));
+                if (commentWithMarker != null)
+                {
+                    rcaRaw = commentWithMarker;
+                    // Identify which marker was used so we can clean it correctly
+                    detectedMarker = rcaMarkers.FirstOrDefault(m =>
+                        rcaRaw.Contains(m, StringComparison.OrdinalIgnoreCase));
+                }
+                else if (rawComments?.Any() == true) // ONLY if no marker is found in ANY comment, fall back to the longest one
+                {
+                    rcaRaw = rawComments.OrderByDescending(c => c.Length).First();
+                }
 
-                //var rca = comments?
-                //    .FirstOrDefault(c => c["body"]?.ToString()
-                //    .Contains("RCA:", StringComparison.OrdinalIgnoreCase) == true)?["body"]?.ToString();
+                // Clean using the detected marker (or empty string if we fell back to length)
+                var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, detectedMarker);
+                var finalWorkaround = DataCleaner.CleanContentByKeyword(workaroundRaw, "Workaround:");
 
-                if (!string.IsNullOrEmpty(rca))
+              
+               
+                if (!string.IsNullOrEmpty(finalRca))
                 {
                     results.Add(new JiraTicket
                     {
-                        //Key = issue["key"]?.ToString(),
-                        //Summary = issue["fields"]?["summary"]?.ToString(),
-                        //Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
-                        //RcaComment = rca,
-
                         Key = issue["key"]?.ToString(),
                         Summary = issue["fields"]?["summary"]?.ToString(),
                         Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
-                        RcaComment = rca ?? "No specific RCA documented",
-                        Workaround = workaround ?? "No manual workaround available" // Add this field to your Model
+                        RcaComment = finalRca ?? "No specific RCA documented",
+                        Workaround = finalWorkaround ?? "No manual workaround available"
                     });
                 }
             }
