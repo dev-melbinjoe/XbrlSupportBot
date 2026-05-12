@@ -6,5 +6,7 @@ namespace XbrlSupportBot.Models
         public string Summary { get; set; }
         public string Priority { get; set; }
         public string RcaComment { get; set; }
+
+      
     }
 }

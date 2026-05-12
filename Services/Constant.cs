@@ -19,6 +19,14 @@ namespace XbrlSupportBot.Services
         public string? Priority { get; set; } = string.Empty;
         public string? RcaComment { get; set; } = string.Empty;
         public string? Workaround { get; set; }
+
+        public string GetSemanticDocument()
+        {
+            return $"Ticket: {Key}\n" +
+                   $"Subject: {Summary}\n" +
+                   $"Problem: {Description}\n" +
+                   $"Solution: {RcaComment}";
+        }
     }
 
     public class XBRLKnowledgeBase
@@ -28,5 +36,7 @@ namespace XbrlSupportBot.Services
         public string? Symptom { get; set; } 
         public string? Resolution { get; set; } 
         public string? Tags { get; set; } // e.g., "Superscript, iXBRL, VIP"
+
+
     }
 }
