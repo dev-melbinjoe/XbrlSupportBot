@@ -1,0 +1,141 @@
+Design and develop a fully-fledged, domain-based web application incorporating industry-standard architecture and pipelines.
+
+# Development Steps
+
+1.  **Domain Analysis and Requirements Gathering**:
+    *   Clearly define the specific business domain for the web application.
+    *   Identify and document all functional and non-functional requirements, including user stories, features, and performance expectations.
+    *   Establish key performance indicators (KPIs) for the application's success.
+
+2.  **Architecture Design**:
+    *   Select an appropriate architectural pattern (e.g., Microservices, Monolithic, MVC, MVVM) based on domain complexity, scalability needs, and team expertise.
+    *   Define the technology stack, including frontend (e.g., React, Angular, Vue.js), backend (e.g., Node.js, Python/Django, Java/Spring, Ruby on Rails, .Net), and database (e.g., PostgreSQL, MySQL, MongoDB, Redis).
+    *   Design the database schema and define data models.
+    *   Outline the API design (RESTful, GraphQL).
+    *   Plan for security considerations, including authentication, authorization, and data protection.
+
+3.  **Development and Implementation**:
+    *   Set up the development environment.
+    *   Implement the frontend user interface and user experience.
+    *   Develop the backend services and business logic.
+    *   Integrate the frontend and backend components.
+    *   Implement database interactions and data persistence.
+    *   Write unit and integration tests for all components.
+
+4.  **Pipeline and Deployment Strategy**:
+    *   Design and implement a Continuous Integration/Continuous Deployment (CI/CD) pipeline using tools like Jenkins, GitLab CI, GitHub Actions, or Azure DevOps.
+    *   Define deployment strategies (e.g., Blue/Green, Canary).
+    *   Set up infrastructure for hosting (e.g., AWS, Azure, GCP, on-premise).
+    *   Implement monitoring and logging solutions (e.g., Prometheus, Grafana, ELK stack).
+
+5.  **Testing and Quality Assurance**:
+    *   Conduct comprehensive testing, including functional testing, performance testing, security testing, and user acceptance testing (UAT).
+    *   Address any bugs or issues identified during testing.
+
+6.  **Deployment and Maintenance**:
+    *   Deploy the application to the production environment.
+    *   Establish a plan for ongoing maintenance, updates, and support.
+    *   Monitor application performance and user feedback for continuous improvement.
+
+# Output Format
+
+The output should be a comprehensive project plan and technical specification document outlining the above steps, technologies chosen, architectural decisions, and a roadmap for development and deployment. This document should be well-structured, detailed, and suitable for guiding a development team.
+
+# Notes
+
+*   **Industry Standards**: Adhere to best practices in software development, security, and DevOps.
+*   **Scalability**: The architecture should be designed with future scalability in mind.
+*   **Maintainability**: Code should be clean, well-documented, and easy to maintain.
+*   **Domain Specificity**: Ensure all technical decisions are aligned with the chosen business domain's specific needs and constraints.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are tasked with developing a comprehensive, domain-specific AI assistant designed to support XBRL/taxonomy tagging software. This assistant will help users debug issues and provide resolutions by accessing Jira tickets and relevant database tables to analyze XBRL taxonomy elements, label texts, and other related data. The development should adhere to industry-standard architecture and pipelines.
+
+# Task Breakdown
+
+1.  **Understand XBRL and Taxonomy Tagging:** Gain a deep understanding of the Extensible Business Reporting Language (XBRL) standard, its taxonomies, and the common challenges encountered during the tagging process within software applications.
+2.  **Jira Integration:** Design and implement mechanisms to securely access and query Jira. This includes fetching relevant ticket details, comments, custom fields, for RCA posted by developers and linking them to specific XBRL elements or issues.
+3.  **Database Integration:** Define and implement secure access to relevant database tables. This involves understanding the database schema related to XBRL elements, label texts, taxonomy versions, and user-generated issues.
+4.  **Issue Debugging and Resolution Logic:** Develop AI models and logic that can:
+    *   Analyze error messages or user-reported issues.
+    *   Correlate issues with specific Jira tickets.
+    *   Query database tables to retrieve context for XBRL elements (e.g., label texts, definitions, data types).
+    *   Identify potential root causes of tagging errors (e.g., incorrect element usage, missing labels, taxonomy inconsistencies).
+    *   Propose resolutions or provide guidance based on the analysis.
+5.  **Architecture and Pipeline Design:**
+    *   Select an appropriate, scalable, and industry-standard architecture (e.g., microservices, event-driven).
+    *   Design robust data ingestion, processing, and analysis pipelines.
+    *   Incorporate elements for model training, deployment, and continuous improvement.
+    *   Ensure security, reliability, and maintainability.
+6.  **AI Model Development:**
+    *   Identify suitable AI/ML models for tasks like natural language understanding (NLU) of Jira tickets, pattern recognition in XBRL data, and predictive analysis for issue resolution.
+    *   Consider techniques such as transformer models, knowledge graphs, or specialized algorithms for financial data analysis.
+7.  **User Interface/Integration:** Define how the AI assistant will interact with the XBRL tagging software and its users. This could involve API endpoints, a chat interface, or direct integration into the software's UI.
+
+# Output Format
+
+The output should be a detailed technical design document outlining the proposed architecture, data models, integration strategies, AI/ML components, and development pipelines for the XBRL/taxonomy tagging AI assistant. This document should be comprehensive and structured, covering all aspects mentioned in the task breakdown.
+
+# Notes
+
+*   **Security:** Emphasize robust security measures for accessing Jira and databases.
+*   **Scalability:** The architecture should support a growing number of users, tickets, and taxonomy data.
+*   **Extensibility:** The design should allow for future enhancements and integration with other systems.
+*   **Accuracy:** Prioritize the accuracy of debugging and resolution suggestions.
+*   **Domain Specificity:** Ensure the AI's understanding is tailored to the nuances of XBRL and financial reporting taxonomies.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
