@@ -149,8 +149,8 @@ namespace XbrlSupportBot.Services
             var response = await _client.GetStringAsync(url);
             var json = JObject.Parse(response);
 
-            string[] rcaMarkers = { "RCA", "Root Cause", "Fix", "Solution" }; // Removed from the array (Resolution)
-            string[] noiseKeywords = { "test mail", "Test email", "ignore this", "test_ticket", "finding available", "analyzing the mentioned issue" };
+            string[] rcaMarkers = { "RCA", "Root Cause", "Fix", "Solution", "root cause analysis" }; // Removed from the array -> (Resolution)
+            string[] noiseKeywords = { "test mail", "Test email", "ignore this", "test_ticket", "finding available", "analyzing the mentioned issue", "test" };
 
             var results = new List<JiraTicket>();
 
