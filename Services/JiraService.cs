@@ -232,7 +232,7 @@ namespace XbrlSupportBot.Services
             _client.DefaultRequestHeaders.Accept.Clear(); // Best practice to clear before adding
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            string jql = $"project = '{jira["ProjectKey"]}' AND status = 'Done'";
+            //string jql = $"project = '{jira["ProjectKey"]}' AND status = 'Done'";
             //string url = $"{jira["BaseUrl"]}/rest/api/3/search/jql?jql={Uri.EscapeDataString(jql)}&fields=description,summary,priority,comment&maxResults=100";
             string url = $"{jira["BaseUrl"]}/rest/api/3/search/jql";
 
