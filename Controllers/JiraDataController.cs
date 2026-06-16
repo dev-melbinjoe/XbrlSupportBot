@@ -22,7 +22,9 @@ namespace XbrlSupportBot.Controllers
         {
             try
             {
-                var tickets = await _jiraService.FetchRcaTicketsAsync();
+                //var tickets = await _jiraService.FetchRcaTicketsAsync();
+
+                var tickets = await _jiraService.FetchRcaTicketsPostAsync();
 
                 _excelService.Export(tickets);
 

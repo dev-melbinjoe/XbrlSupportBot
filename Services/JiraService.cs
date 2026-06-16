@@ -1,5 +1,6 @@
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http.Headers;
@@ -144,8 +145,8 @@ namespace XbrlSupportBot.Services
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             string jql = $"project = '{jira["ProjectKey"]}' AND status = 'Done'";
-            string url = $"{jira["BaseUrl"]}/rest/api/3/search/jql?jql={Uri.EscapeDataString(jql)}&fields=description,summary,priority,comment&maxResults=100";
-
+            //string url = $"{jira["BaseUrl"]}/rest/api/3/search/jql?jql={Uri.EscapeDataString(jql)}&fields=description,summary,priority,comment&maxResults=100";
+            string url = $"{jira["BaseUrl"]}/rest/api/3/search?jql={Uri.EscapeDataString(jql)}&fields=description,summary,priority,comment&maxResults=100";
             var response = await _client.GetStringAsync(url);
             var json = JObject.Parse(response);
 
@@ -216,6 +217,118 @@ namespace XbrlSupportBot.Services
         }
 
 
+
+
+        #region PostAsync to fetch jira details
+
+
+        public async Task<List<JiraTicket>> FetchRcaTicketsPostAsync()
+        {
+           
+            var jira = _config.GetSection("Jira");
+            var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{jira["Email"]}:{jira["ApiToken"]}"));
+
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
+            _client.DefaultRequestHeaders.Accept.Clear(); // Best practice to clear before adding
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            string jql = $"project = '{jira["ProjectKey"]}' AND status = 'Done'";
+            //string url = $"{jira["BaseUrl"]}/rest/api/3/search/jql?jql={Uri.EscapeDataString(jql)}&fields=description,summary,priority,comment&maxResults=100";
+            string url = $"{jira["BaseUrl"]}/rest/api/3/search/jql";
+
+
+            var requestBody = new
+            {
+                jql = $"project = '{jira["ProjectKey"]}' AND status = 'Done'",
+                fields = new[] { "description", "summary", "priority", "comment" },
+                maxResults = 100
+            };
+
+
+            var jsonBody = JsonConvert.SerializeObject(requestBody);
+            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+            var response = await _client.PostAsync(url, content);
+
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Jira API Error: {response.StatusCode} - {errorContent}");
+            }
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(responseString);
+
+            string[] rcaMarkers = { "RCA", "Root Cause", "Solution", "root cause analysis" }; // Removed from the array -> (Resolution,"Fix")
+            string[] noiseKeywords = { "test mail", "Test email", "ignore this", "test_ticket", "finding available", "analyzing the mentioned issue", "test" };
+
+            var results = new List<JiraTicket>();
+
+            if (json["issues"] == null) return results;
+
+            foreach (var issue in json["issues"])
+            {
+                // 1. Get Clean Description
+                var rawDescription = issue["fields"]?["description"];
+                var cleanDescription = DataCleaner.CleanJiraNoise(DataCleaner.ConvertAdfToText(rawDescription));
+
+                // 2. Extract and Clean Comments
+                var rawComments = issue["fields"]?["comment"]?["comments"]?
+                              .Select(c => DataCleaner.ConvertAdfToText(c["body"]))
+                              .ToList();
+
+                string rcaRaw = null;
+                string detectedMarker = "";
+
+                // Look specifically for comments containing markers
+                var commentWithMarker = rawComments?.FirstOrDefault(c =>
+                    rcaMarkers.Any(m => c.Contains(m, StringComparison.OrdinalIgnoreCase)));
+
+                if (commentWithMarker != null)
+                {
+                    rcaRaw = commentWithMarker;
+                    detectedMarker = rcaMarkers.FirstOrDefault(m => rcaRaw.Contains(m, StringComparison.OrdinalIgnoreCase));
+                }
+                else if (rawComments?.Any() == true)
+                {
+                    // Fallback to the longest comment as it's most likely the resolution
+                    rcaRaw = rawComments.OrderByDescending(c => c.Length).First();
+                }
+
+                // 3. Final Cleaning of RCA and Workaround
+                var finalRca = DataCleaner.CleanContentByKeyword(rcaRaw, detectedMarker);
+                var workaroundRaw = rawComments?.FirstOrDefault(c => c.Contains("Workaround:", StringComparison.OrdinalIgnoreCase));
+                var finalWorkaround = DataCleaner.CleanContentByKeyword(workaroundRaw, "Workaround:");
+
+                // 4. Noise Filter Logic
+                string summary = issue["fields"]?["summary"]?.ToString() ?? "";
+                bool isNoise = noiseKeywords.Any(nk =>
+                    summary.Contains(nk, StringComparison.OrdinalIgnoreCase) ||
+                    (finalRca?.Contains(nk, StringComparison.OrdinalIgnoreCase) ?? false));
+
+                // 5. Quality Gate & Add to Results
+                // Only include if it has a valid RCA, is not noise, and passes High Value check
+                if (!string.IsNullOrEmpty(finalRca) && !isNoise && IsHighValueRca(finalRca))
+                {
+                    results.Add(new JiraTicket
+                    {
+                        Key = issue["key"]?.ToString(),
+                        Summary = summary,
+                        Description = cleanDescription,
+                        Priority = issue["fields"]?["priority"]?["name"]?.ToString(),
+                        RcaComment = finalRca,
+                        Workaround = !string.IsNullOrWhiteSpace(finalWorkaround) ? finalWorkaround : "No manual workaround available"
+                    });
+                }
+            }
+
+            return results;
+        }
+
+
+
+        #endregion
 
         private bool IsHighValueRca(string rca)
         {
