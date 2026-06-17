@@ -1,3 +1,4 @@
+using XbrlSupportBot.AIServices;
 using XbrlSupportBot.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+// Register the Local AI Foundry Service as a Singleton
+builder.Services.AddSingleton<ILocalLlmSynthesisService, LocalLlmSynthesisService>();
 
 builder.Services.AddScoped<IJiraService, JiraService>();
 builder.Services.AddHttpClient<IJiraService, JiraService>();
