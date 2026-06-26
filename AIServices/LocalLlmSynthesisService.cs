@@ -1,9 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Betalgo.Ranul.OpenAI.ObjectModels.RequestModels;
 using Microsoft.AI.Foundry.Local;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Betalgo.Ranul.OpenAI.ObjectModels.RequestModels;
+using OpenAI.Chat;
+using System;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace XbrlSupportBot.AIServices
 {
@@ -20,7 +23,7 @@ namespace XbrlSupportBot.AIServices
         public LocalLlmSynthesisService(IConfiguration config, ILogger<LocalLlmSynthesisService> logger)
         {
             _logger = logger;
-            _appName = config["LocalAI:AppName"] ?? "XbrlSupportBot_LocalAI";
+            _appName = config["LocalAI:AppName"] ?? "XbrlSupportBot_OfflineEngine";
             _modelAlias = config["LocalAI:ModelAlias"] ?? "qwen2.5-0.5b";
         }
 
@@ -31,6 +34,9 @@ namespace XbrlSupportBot.AIServices
             await _semaphore.WaitAsync();
             try
             {
+
+               
+
                 if (!_isInitialized)
                 {
                     _logger.LogInformation("Initializing Foundry Local manager for App: {AppName}", _appName);
@@ -65,25 +71,46 @@ namespace XbrlSupportBot.AIServices
 
         public async Task<string> GenerateStepByStepGuideAsync(string description, string rca)
         {
-            // Safeguard to guarantee the model runtime layer is hot
             await EnsureModelLoadedAsync();
 
             if (_model == null)
                 throw new InvalidOperationException("The local AI model interface failed to bind correctly.");
 
-            // 4. Retrieve the contextual chat client layer from the model instance
+            // 1. Resolve the OpenAI-compliant client wrapper from your model instance metadata
             var chatClient = await _model.GetChatClientAsync();
 
-            // Build structured prompt engineering layout
             string prompt = $"You are an expert system engineering analyzer. Rewrite the following problem description and its raw Root Cause Analysis (RCA) note into a clean, structured, user-facing markdown step-by-step developer troubleshooting layout.\n\nDescription:\n{description}\n\nRCA Context:\n{rca}\n\nReturn ONLY the structured markdown steps.";
 
-            // 5. Execute the query using the native Betalgo message packet
-            var response = await chatClient.CompleteChatAsync(new[]
-            {
-                new ChatMessage { Role = "user", Content = prompt }
-            });
+            _logger.LogInformation("Sending prompt to local LLM inference engine...");
+            var sb = new StringBuilder();
 
-            return response.Choices?[0]?.Message?.Content ?? rca;
+            try
+            {
+                // 2. FIX: Wrap the prompt in a UserChatMessage object and call the official OpenAI SDK streaming method
+                var streamingUpdate = chatClient.CompleteChatStreamingAsync(new ChatMessage[]
+                {
+                    new UserChatMessage(prompt)
+                });
+
+                await foreach (var update in streamingUpdate)
+                {
+                    // In the official OpenAI SDK, streaming fragments return content chunks in ContentUpdate lists
+                    foreach (var part in update.ContentUpdate)
+                    {
+                        if (!string.IsNullOrEmpty(part.Text))
+                        {
+                            sb.Append(part.Text);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred during local LLM streaming inference.");
+                return rca; // Graceful fallback to original RCA text upon generation errors
+            }
+
+            return sb.Length > 0 ? sb.ToString() : rca;
         }
     }
 }
