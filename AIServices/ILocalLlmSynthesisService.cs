@@ -6,5 +6,7 @@ namespace XbrlSupportBot.AIServices
     {
         Task EnsureModelLoadedAsync();
         Task<string> GenerateStepByStepGuideAsync(string description, string rca);
+
+        Task<string> GenerateGeneralResponseAsync(string query);
     }
 }

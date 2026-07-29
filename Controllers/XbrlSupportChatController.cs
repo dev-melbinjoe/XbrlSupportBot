@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 using XbrlSupportBot.AIServices;
 using XbrlSupportBot.Services;
@@ -41,20 +42,32 @@ namespace XbrlSupportBot.Controllers
             {
                 // Ensure model layers are active and loaded in host memory
                 await _localAiService.EnsureModelLoadedAsync();
+                string query = request.Query.Trim();
+                string[] greetings = new[] { "hi", "hello", "hey", "greetings", "good morning", "good afternoon" };
+                if (greetings.Contains(query.ToLower()))
+                {
+                    string aiResponse = await _localAiService.GenerateGeneralResponseAsync(query);
+                    return Ok(new { response = aiResponse });
+                }
+                else
+                {
+                    string aiResponse = await _localAiService.GenerateStepByStepGuideAsync(
+                      request.Query,
+                      "Interactive Live UI User Session Prompt Context"
+                    );
+                    return Ok(new { Response = aiResponse });
+                }
+                    // Generate response by passing prompt context down into the local execution instance
+                  
 
-                // Generate response by passing prompt context down into the local execution instance
-                string aiResponse = await _localAiService.GenerateStepByStepGuideAsync(
-                    request.Query,
-                    "Interactive Live UI User Session Prompt Context"
-                );
-
-                return Ok(new { Response = aiResponse });
+              
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { Message = $"LLM Execution Error: {ex.Message}" });
             }
         }
+
 
         [HttpGet("extract")]
         public async Task<IActionResult> ExtractAndProcess()
