@@ -59,3 +59,26 @@ CREATE TABLE jira_vectors (
     content TEXT,
     embedding vector(1536) -- 1536 is standard for OpenAI; change based on your model
 );
+
+
+
+
+
+
+
+
+
+
+
+Hi Team,
+The seal is broken. The surprise is here! We're thrilled to launch our Independence Day Photography Competition.
+Please refer to the attached poster for the competition details and submission guidelines.
+Photography Competition – Rules & Regulations
+1.	The competition is open to all DataTracks employees.  
+2.	Each participant must submit only one photograph.
+3.	Entries must be submitted in JPEG or PNG format with a minimum resolution of 1920 × 1080 pixels (Landscape) or 1080 × 1920 pixels (Portrait).
+4.	Basic editing (colour correction, colour grading, cropping, and exposure adjustments) is permitted. AI-generated, AI-enhanced, or digitally manipulated images are not allowed.
+5.	Entries must be submitted on or before 11th August 2026, 11:59 PM.
+6.	The decision of the Judging Panel will be final.
+ We look forward to your participation and wish you the very best.
+ 
